@@ -95,16 +95,18 @@ function AjouterFilmListe($idUtilisateur,$idFilm,$typeListe)
 }
 
 /**
- * Ajoute l'id omdbapi dans la base de donnée
+ * Ajoute l'id omdbapi dans la base de donnée et le nom
  * @param string $idFilm L'id du film
+ * @param string $nom Le nom du film
  */
-function AjouterFilmBDD($idFilm)
+function AjouterFilmBDD($idFilm,$nom)
 {
     $connexion = getConnexion();
     
-    $requete = $connexion->prepare("INSERT INTO api (imdbID) VALUES (:idFilm)");
+    $requete = $connexion->prepare("INSERT INTO api (imdbID,nomFilm) VALUES (:idFilm,:nom)");
     
     $requete->bindParam(":idFilm", $idFilm, PDO::PARAM_STR);
+    $requete->bindParam(":nom", $nom, PDO::PARAM_STR);
     
     $requete->execute();
 }
