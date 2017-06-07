@@ -8,7 +8,7 @@
  * Affiche le nav si c'est un utilisateur connecté ou non
  * @param bool $etatUtilisateur Vrai si l'utilisateur est connecté, faux si non
  */
-function AfficherNav($etatUtilisateur,$nom)
+function AfficherNav($etatUtilisateur)
 {
     ?>
     
@@ -22,22 +22,21 @@ function AfficherNav($etatUtilisateur,$nom)
                 <li class="nav-item">
                     <a class="nav-link" href="index.php">Accueil <span class="sr-only"></span></a>
                 </li>
-                <li class="nav-item dropdown">
+                <?php
+                
+                if ($etatUtilisateur) 
+                {
+                    echo '<li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" id="listes" href="index.php?type=Avoir" role="button" aria-haspopup="true" aria-expanded="false">
                     Mes listes
                     </a>
                     <div class="dropdown-menu" aria-labelledby="Preview">
                     <a class="dropdown-item" href="index.php?type=AVoir">A voir</a>
                     <a class="dropdown-item" href="index.php?type=Vu">Vu</a>
-                    </div>
-                </li>
+                    </div></li>';
+                }
+                ?>
             </ul>
-            <?php 
-            if ($etatUtilisateur) 
-            {
-                echo '<span class="navbar-text mr-sm-4">Bienvenue, ' . $nom .'</span>';
-            }
-            ?>
             <form action="index.php" method="post" class="form-inline">
                 <div class="input-group">
                     <input class="form-control" type="text"  name="rechercheTitre" placeholder="Rechercher">

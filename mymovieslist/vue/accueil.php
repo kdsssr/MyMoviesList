@@ -1,4 +1,8 @@
 <?php
+// Auteur       : De Sousa Kevin
+// Nom          : MyMoviesList
+// Date         : 7 Juin 2017
+// Page d'accueil
 
 if (!isset($mvc))
 {

@@ -31,6 +31,15 @@ if (isset($_POST["connecter"]) && !(isset($_SESSION["idUtilisateur"])))
     exit();
 }
 
+if (isset($_POST["deconnecter"]) && (isset($_SESSION["idUtilisateur"])))
+{
+    session_destroy();
+    $_SESSION = array();
+    $etat = "Vous êtes déconnecté";
+    $_SESSION["log"] = false;
+    $_SESSION["pseudo"] = "";
+}
+
 if (isset($_REQUEST["logger"]) && isset($_REQUEST["mdp"]))
 {
     $Utilisateur = VerifierLogin($_REQUEST["pseudo"], sha1($_REQUEST["mdp"]));
