@@ -57,6 +57,28 @@ if (isset($_REQUEST["logger"]) && isset($_REQUEST["mdp"]))
     }
 }
 
+if (isset($_REQUEST["rechercheTitre"]))
+{
+    $infosFilm = RechercheFilmParTitre($_REQUEST["rechercheTitre"]);
+    include_once './vue/pagefilm.php';
+    exit();
+}
+else
+{
+     $infosFilm = null;
+}
+
+if (isset($_REQUEST["rechercheId"]))
+{
+    $infosFilm = RechercheFilmParId($_REQUEST["rechercheId"]);
+    include_once './vue/pagefilm.php';
+    exit();
+}
+else
+{
+     $infosFilm = null;
+}
+
 include_once './vue/accueil.php';
 exit();
 
