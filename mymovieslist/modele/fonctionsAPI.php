@@ -1,7 +1,9 @@
 <?php
 // Auteur       : De Sousa Kevin
 // Nom          : MyMoviesList
+// Date         : 7 Juin 2017
 // Fonctions liés à omdbapi
+// API key = fc17a632
 
 /**
  * Fait une recherche avec le titre du film avec omdbapi
@@ -10,7 +12,7 @@
  */
 function RechercheFilmParTitre($titre)
 {
-    $url = "http://www.omdbapi.com/?t="  . urlencode($titre) ."&y=&plot=short&r=json";
+    $url = "http://www.omdbapi.com/?t="  . urlencode($titre) ."&r=json&type=movie&apikey=fc17a632";
     
     $jsonReponse = file_get_contents($url);
     $objet = json_decode($jsonReponse);
@@ -25,7 +27,7 @@ function RechercheFilmParTitre($titre)
  */
 function RechercheFilmParId($id)
 {
-    $url = "http://www.omdbapi.com/?i="  . urlencode($id) ."&y=&plot=short&r=json";
+    $url = "http://www.omdbapi.com/?i="  . urlencode($id) ."&r=json&type=movie&apikey=fc17a632";
     
     $jsonReponse = file_get_contents($url);
     $objet = json_decode($jsonReponse);
