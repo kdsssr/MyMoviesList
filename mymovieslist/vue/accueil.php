@@ -21,7 +21,7 @@ if (!isset($mvc))
         <title>MyMoviesList</title>
     </head>
     <body>
-        <?php AfficherNav($_SESSION["log"],$_SESSION["pseudo"]); echo $etat; ?>
+        <?php AfficherNav($_SESSION["log"],$_SESSION["pseudo"]); echo $etat;?>
         <div class="container" align="center">
             <h1>Accueil</h1>
         </div>
