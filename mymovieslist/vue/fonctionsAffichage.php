@@ -38,6 +38,10 @@ function AfficherNav($etatUtilisateur)
                 ?>
             </ul>
             <form action="index.php" method="post" class="form-inline">
+                <select class="custom-select mb-2 mr-sm-2 mb-sm-0 input-group" id="inlineFormCustomSelect" name="categorie">
+                        <option value="film">Film</option>
+                        <option value="profil">Profil</option>
+                </select>
                 <div class="input-group">
                     <input class="form-control" type="text"  name="rechercheTitre" placeholder="Rechercher">
                     <span class="input-group-btn">
