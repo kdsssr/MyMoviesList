@@ -95,3 +95,45 @@ function AfficherFilm($film)
     }
     
 }
+
+function AfficherListe($liste, $proprietaire, $type,$utilisateur)
+{
+    if ($proprietaire)
+    {
+      AfficherListePerso($liste, $type);
+    }
+    else
+    {
+      AfficherListeAutre($liste, $type,$utilisateur);  
+    }
+}
+
+function AfficherListePerso($laListe,$type)
+{
+    echo '<h1>Voici votre liste de film ' . $type . '</h1>';
+    echo '<table class="table table-striped table-inverse"><tr><th>Nom</th><th>Changer de liste</th><th>Supprimer de la liste</th></tr>'
+    . '<form action="index.php" method="post">';
+    
+    foreach ($laListe as $key => $value)
+    {
+        echo '<tr><td><a href="index.php?f=' . $value["imdbID"] .'">' . $value["nomFilm"] .'</a></td><td>'
+                . '<button class="btn btn-outline-info" type="submit" style="border: none;" name="filmMaJ" value="' . $value["imdbID"] .'" ><img src="./vue/img/changer.png" style="width: 25px;" alt="Supprimer"></button></td><td>'
+                . '<button class="btn  btn-outline-danger" type="submit" style="border: none;" name="suppFilm" value="' . $value["imdbID"] .'">'
+                . '<img src="./vue/img/croix.png" style="width: 25px;" alt="Supprimer"></button></tr>';
+    }
+    
+    echo '</form></table>';
+}
+
+function AfficherListeAutre($laListe,$type,$nomUtilisateur)
+{
+    echo '<h1>Voici la liste de film ' . $type . ' de <a href="">' . $nomUtilisateur .'</a></h1>';
+    echo '<table class="table table-striped table-inverse"><tr><th>Nom</th></tr>';
+    
+    foreach ($laListe as $key => $value)
+    {
+        echo '<tr><td colspan="3" ><a href="index.php?f=' . $value["imdbID"] .'">' . $value["nomFilm"] .'</a></td></tr>';
+    }
+    
+    echo '</table>';
+}
