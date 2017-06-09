@@ -130,3 +130,75 @@ function VerifierFilmExiste($id)
     
     return $resultat;
 }
+
+function getFilmListe($idUtilisateur,$type)
+{
+    $connexion = getConnexion();
+    
+    $requete = $connexion->prepare("select * FROM listes natural join api WHERE idUtilisateur = :id and typeListe = :type order by nomFilm");
+    
+    $requete->bindParam(":id", $idUtilisateur, PDO::PARAM_INT);
+    $requete->bindParam(":type", $type, PDO::PARAM_STR);
+    
+    $requete->execute();
+    
+    $resultat = $requete->fetchAll(PDO::FETCH_ASSOC);
+    
+    return $resultat;
+}
+
+function DeleteFilmListe($idUtilisateur,$idFilm)
+{
+    $connexion = getConnexion();
+    
+    $requete = $connexion->prepare("delete FROM listes WHERE idUtilisateur = :idUtilisateur and imdbID = :idFilm");
+    
+    $requete->bindParam(":idUtilisateur", $idUtilisateur, PDO::PARAM_INT);
+    $requete->bindParam(":idFilm", $idFilm, PDO::PARAM_STR);
+    
+    $requete->execute();
+}
+
+function getTypeListe($idUtilisateur,$idFilm)
+{
+    $connexion = getConnexion();
+    
+    $requete = $connexion->prepare("select typeListe FROM listes WHERE idUtilisateur = :idUtilisateur and imdbID = :idFilm");
+    
+    $requete->bindParam(":idUtilisateur", $idUtilisateur, PDO::PARAM_INT);
+    $requete->bindParam(":idFilm", $idFilm, PDO::PARAM_STR);
+    
+    $requete->execute();
+    
+    $resultat = $requete->fetchAll(PDO::FETCH_ASSOC);
+    
+    return $resultat;
+}
+
+function updateListe($idUtilisateur,$idFilm,$type)
+{
+    $connexion = getConnexion();
+    
+    $requete = $connexion->prepare("UPDATE listes set typeListe =:NouvType WHERE idUtilisateur = :idUtilisateur and imdbID = :idFilm");
+    
+    $requete->bindParam(":NouvType", $type, PDO::PARAM_STR);
+    $requete->bindParam(":idUtilisateur", $idUtilisateur, PDO::PARAM_INT);
+    $requete->bindParam(":idFilm", $idFilm, PDO::PARAM_STR);
+    
+    $requete->execute();
+}
+
+function getNomUtilisateur($idUtilisateur)
+{
+    $connexion = getConnexion();
+    
+    $requete = $connexion->prepare("select pseudo FROM utilisateurs WHERE idUtilisateur = :id");
+    
+    $requete->bindParam(":id", $idUtilisateur, PDO::PARAM_STR);
+    
+    $requete->execute();
+    
+    $resultat = $requete->fetchAll(PDO::FETCH_ASSOC);
+    
+    return $resultat;
+}

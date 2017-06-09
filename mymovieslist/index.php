@@ -25,13 +25,13 @@ else
     $_SESSION["pseudo"] = "";
 }
 
-if (isset($_POST["connecter"]) && !(isset($_SESSION["idUtilisateur"])))
+if (isset($_POST["connecter"]) && !($_SESSION["log"]))
 {
     include_once './vue/connexion.php';
     exit();
 }
 
-if (isset($_POST["deconnecter"]) && (isset($_SESSION["idUtilisateur"])))
+if (isset($_POST["deconnecter"]) && $_SESSION["log"])
 {
     session_destroy();
     $_SESSION = array();
@@ -60,6 +60,19 @@ if (isset($_REQUEST["logger"]) && isset($_REQUEST["mdp"]))
 if (isset($_REQUEST["rechercheTitre"]))
 {
     $infosFilm = RechercheFilmParTitre($_REQUEST["rechercheTitre"]);
+    
+    $typeDejaListe = "pas";
+    
+    if ($infosFilm->Response == "True" && $_SESSION["log"])
+    {
+        $infoListe = getTypeListe($_SESSION["idUtilisateur"], $infosFilm->imdbID);
+        
+        if ($infoListe)
+        {
+            $typeDejaListe = $infoListe[0]["typeListe"];
+        }
+    }
+    
     include_once './vue/pagefilm.php';
     exit();
 }
@@ -68,9 +81,19 @@ else
      $infosFilm = null;
 }
 
-if (isset($_REQUEST["rechercheId"]))
+if (isset($_GET["f"]))
 {
-    $infosFilm = RechercheFilmParId($_REQUEST["rechercheId"]);
+    $infosFilm = RechercheFilmParId($_GET["f"]);
+    $infoListe = getTypeListe($_SESSION["idUtilisateur"], $infosFilm->imdbID);
+    
+    if ($infoListe)
+    {
+        $typeDejaListe = $infoListe[0]["typeListe"];
+    }
+    else 
+    {
+        $typeDejaListe = "pas";
+    }
     include_once './vue/pagefilm.php';
     exit();
 }
@@ -79,12 +102,12 @@ else
      $infosFilm = null;
 }
 
-if (isset($_POST["typeListe"]) && isset($_SESSION["idUtilisateur"]))
+if (isset($_POST["typeListe"]) && $_SESSION["log"])
 {
     
     $filmAjoute = RechercheFilmParId($_POST["filmID"]);
     
-    if (!(is_null($filmAjoute))&& $filmAjoute->Response == "True")
+    if ($filmAjoute->Response == "True" && ($_POST["typeListe"] == "vu" || $_POST["typeListe"] == "aVoir"))
     {
         
         if (!(VerifierFilmExiste($filmAjoute->imdbID)))
@@ -92,16 +115,32 @@ if (isset($_POST["typeListe"]) && isset($_SESSION["idUtilisateur"]))
             AjouterFilmBDD($filmAjoute->imdbID,$filmAjoute->Title);
         }
         
-        if ($_POST["typeListe"] == "vu" || $_POST["typeListe"] == "aVoir")
+        $listeActuelle = getTypeListe($_SESSION["idUtilisateur"], $filmAjoute->imdbID);
+        
+        if (!($listeActuelle))
         {
             AjouterFilmListe($_SESSION["idUtilisateur"], $filmAjoute->imdbID, $_POST["typeListe"]);
             $etat = "Le film " . $filmAjoute->Title . " a été ajouté dans la liste " . $_POST["typeListe"];
+        }
+        else if ($listeActuelle[0]["typeListe"] == $_POST["typeListe"])
+        {
+            $etat = "Ce film est déjà dans votre liste.";
+        }
+        else if ($listeActuelle[0]["typeListe"] != $_POST["typeListe"])
+        {
+            $etat = "Ce film a été déplacé de liste.";
+            updateListe($_SESSION["idUtilisateur"], $filmAjoute->imdbID, $_POST["typeListe"]);
         }
     }
     else
     {
         $etat = "Le film que vous avez essayé de rajouter n'existe pas.";
     }
+}
+else if (!($_SESSION["log"])&& isset($_POST["typeListe"]))
+{
+    include_once './vue/connexion.php';
+    exit();
 }
 
 if (isset($_GET["type"])  && $_SESSION["log"])
@@ -114,7 +153,7 @@ if (isset($_GET["type"])  && $_SESSION["log"])
     exit();
 }
 
-if (isset($_POST["type"])&&isset($_POST["utilisateurListe"]))
+if (isset($_POST["type"])&& $_SESSION["log"])
 {
     $listeFilms = getFilmListe($_POST["utilisateurListe"], $_POST["type"]);
     $typeListe = $_POST["type"];
@@ -146,13 +185,13 @@ if (isset($_POST["filmMaJ"]))
 {
     $typeListeAvant = getTypeListe($_SESSION["idUtilisateur"], $_POST["filmMaJ"]);
     
-    if ($typeListeAvant[0]["typeListe"] == "Vu")
+    if ($typeListeAvant[0]["typeListe"] == "vu")
     {
         updateListe($_SESSION["idUtilisateur"], $_POST["filmMaJ"], "aVoir");
     }
     else if ($typeListeAvant[0]["typeListe"] == "aVoir")
     {
-        updateListe($_SESSION["idUtilisateur"], $_POST["filmMaJ"], "Vu");
+        updateListe($_SESSION["idUtilisateur"], $_POST["filmMaJ"], "vu");
     }
 }
 

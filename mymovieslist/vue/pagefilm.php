@@ -25,7 +25,7 @@ if (!isset($mvc))
         <div class="container" align="center">
             <form action="index.php" method="post">
                 <?php
-                AfficherFilm($infosFilm);
+                AfficherFilm($infosFilm,$typeDejaListe);
                 ?>
             </form>
         </div>

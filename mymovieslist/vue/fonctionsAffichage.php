@@ -74,18 +74,34 @@ function AfficherNav($etatUtilisateur)
  * La fonction gère l'affichage des informations du film dans une table
  * @param object $film L'objet comportant les informations du film
  */
-function AfficherFilm($film)
+function AfficherFilm($film,$listeDejaActive)
 {
-    if (!(is_null($film))&& $film->Response == "True")
+    if ($film->Response == "True")
     {
+        if ($listeDejaActive == "vu")
+        {
+            $vu = " disabled";
+            $aVoir = "";
+        }
+        else if ($listeDejaActive == "aVoir")
+        {
+            $vu = "";
+            $aVoir = " disabled";
+        }
+        else
+        {
+            $vu = "";
+            $aVoir = "";
+        }
+        
         echo '<table class="table table-striped" ><tr><th colspan="3" class="display-4 text-center" >' . $film->Title . '</th></tr>'
                 . '<tr><td rowspan="5"><img class="mx-auto d-block" src="' . $film->Poster . '" alt="Poster" style="width: 200px;"></td>'
                 . '<th>Date de sortie : </th><td>' . $film->Released . '</td></tr>'
                 . '<tr><th>Genre : </th><td>' . $film->Genre . '</td></tr>'
                 . '<tr><th>Réalisateur : </th><td>' . $film->Director . '</td></tr>'
                 . '<tr><th>Acteurs : </th><td>' . $film->Actors . '</td></tr>'
-                . '<tr><td><button type="submit" name="typeListe" value="aVoir" class="btn btn-warning btn-sm">A voir</button></td>'
-                . '<td><button type="submit" name="typeListe" value="vu" class="btn btn-success btn-sm">Vu</button></td></tr>'
+                . '<tr><td><button' . $aVoir . ' type="submit" name="typeListe" value="aVoir" class="btn btn-warning btn-sm">A voir</button></td>'
+                . '<td><button' . $vu .' type="submit" name="typeListe" value="vu" class="btn btn-success btn-sm">Vu</button></td></tr>'
                 . '<tr><th  colspan="3">Synopsis : </th></tr><tr><td colspan="3">' . $film->Plot . '</td></tr></table>'
                 . '<input type="hidden" value="' . $film->imdbID .'" name="filmID">';
     }
@@ -110,7 +126,7 @@ function AfficherListe($liste, $proprietaire, $type,$utilisateur)
 
 function AfficherListePerso($laListe,$type)
 {
-    echo '<h1 class="mb-5 mt-5">Voici votre liste de film ' . $type . '</h1>';
+    echo '<h1 class="mb-5 mt-5 display-4">Voici votre liste de film ' . $type . '</h1>';
     echo '<table class="table table-striped table-inverse"><tr><th>Nom</th><th>Changer de liste</th><th>Supprimer de la liste</th></tr>'
     . '<form action="index.php" method="post">';
     
@@ -127,7 +143,7 @@ function AfficherListePerso($laListe,$type)
 
 function AfficherListeAutre($laListe,$type,$nomUtilisateur)
 {
-    echo '<h1 class="mb-5 mt-5">Voici la liste de film ' . $type . ' de <a href="">' . $nomUtilisateur .'</a></h1>';
+    echo '<h1 class="mb-5 mt-5 display-4">Voici la liste de film ' . $type . ' de <a href="">' . $nomUtilisateur .'</a></h1>';
     echo '<table class="table table-striped table-inverse"><tr><th>Nom</th></tr>';
     
     foreach ($laListe as $key => $value)
