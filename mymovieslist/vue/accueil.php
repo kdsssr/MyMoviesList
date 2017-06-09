@@ -23,7 +23,7 @@ if (!isset($mvc))
     <body>
         <?php AfficherNav($_SESSION["log"],$_SESSION["pseudo"]); echo $etat;?>
         <div class="container" align="center">
-            <h1>Accueil</h1>
+            <h1 class="mb-5 mt-5">Accueil</h1>
         </div>
     </body>
 </html>

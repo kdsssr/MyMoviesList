@@ -1,14 +1,13 @@
 <?php
 // Auteur       : De Sousa Kevin
 // Nom          : MyMoviesList
-// Date         : 7 Juin 2017
-// Page de connexion
+// Date         : 9 Juin 2017
+// Page d'affichage des films
 
 if (!isset($mvc))
 {
     header("Location: ../index.php");
 }
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -20,15 +19,10 @@ if (!isset($mvc))
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
         <title>MyMoviesList</title>
     </head>
-    <body> 
-        <?php AfficherNav($_SESSION["log"],$_SESSION["pseudo"]);?>
-        <div class="form-login container col-4">
-            <h1 class="text-center display-3 mb-5 mt-5" >Bienvenue</h1>
-            <form action="index.php" method="post" class="form-signin">
-                <input type="text" id="inputName" name="pseudo" class="form-control" placeholder="Pseudo" required autofocus>
-                <input type="password" name="mdp" id="inputPassword" class="form-control" placeholder="Mot de passe" required>
-                <button class="btn btn-lg btn-primary btn-block btn-signin" type="submit" name="logger">Se connecter</button>
-            </form>
+    <body>
+        <?php AfficherNav($_SESSION["log"],$_SESSION["pseudo"]); ?>
+        <div class="container" align="center">
+            <?php AfficherListe($listeFilms, $perso, $typeListe,$nom); ?>
         </div>
     </body>
 </html>
