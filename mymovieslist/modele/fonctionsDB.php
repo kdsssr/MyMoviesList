@@ -229,3 +229,19 @@ function compterFilms()
     
     return $resultat;
 }
+
+function compterFilmDansListe($id)
+{
+    $connexion = getConnexion();
+    
+    $requete = $connexion->prepare('SELECT (select count(typeListe) FROM listes WHERE typeListe = "aVoir" and imdbID = :id) as nbFilmsAvoir,'
+            . '(select count(typeListe)as filmsVu FROM listes WHERE typeListe = "vu" and imdbID = :id) as nbFilmsVu');
+    
+    $requete->bindParam(":id", $id, PDO::PARAM_STR);
+    
+    $requete->execute();
+    
+    $resultat = $requete->fetchAll(PDO::FETCH_ASSOC);
+    
+    return $resultat;
+}

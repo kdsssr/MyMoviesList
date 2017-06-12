@@ -16,7 +16,7 @@ function AfficherNav($etatUtilisateur)
         <button class="navbar-toggler navbar-toggler-right collapsed" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
         </button>
-        <a class="navbar-brand" href="index.php">My Movies List</a>
+        <a class="navbar-brand" href="index.php"><img src="vue/img/iconeB.png" style="width: 40px"></a>
         <div class="navbar-collapse collapse" id="navbarColor01" aria-expanded="false">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
@@ -94,12 +94,15 @@ function AfficherFilm($film,$listeDejaActive)
             $aVoir = "";
         }
         
+        $nbDansListes = compterFilmDansListe($film->imdbID);
+        
         echo '<table class="table table-striped" ><tr><th colspan="3" class="display-4 text-center" >' . $film->Title . '</th></tr>'
-                . '<tr><td rowspan="5"><img class="mx-auto d-block" src="' . $film->Poster . '" alt="Poster" style="width: 200px;"></td>'
+                . '<tr><td rowspan="6"><img class="mx-auto d-block" src="' . $film->Poster . '" alt="Poster" style="width: 200px;"></td>'
                 . '<th>Date de sortie : </th><td>' . $film->Released . '</td></tr>'
                 . '<tr><th>Genre : </th><td>' . $film->Genre . '</td></tr>'
                 . '<tr><th>Réalisateur : </th><td>' . $film->Director . '</td></tr>'
                 . '<tr><th>Acteurs : </th><td>' . $film->Actors . '</td></tr>'
+                . '<tr><th>Notes moyennes : </th><td>' . $film->imdbRating . '</td></tr>'
                 . '<tr><td><button' . $aVoir . ' type="submit" name="typeListe" value="aVoir" class="btn btn-warning btn-sm">A voir</button></td>'
                 . '<td><button' . $vu .' type="submit" name="typeListe" value="vu" class="btn btn-success btn-sm">Vu</button></td></tr>'
                 . '<tr><th  colspan="3">Synopsis : </th></tr><tr><td colspan="3">' . $film->Plot . '</td></tr></table>'
