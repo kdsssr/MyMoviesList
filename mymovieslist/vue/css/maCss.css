@@ -1,0 +1,11 @@
+
+.page-link
+{
+    background-color: #292b2c;
+    color: #fff;
+}
+.page-link:hover
+{
+    background-color: #1e1e1e;
+    color: #fff;
+}

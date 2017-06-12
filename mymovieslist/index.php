@@ -12,6 +12,7 @@ require './modele/fonctionsDB.php';
 
 $etat = "";
 $mvc = true;
+$limite = 10;
 
 if (isset($_SESSION["idUtilisateur"]))
 {
@@ -84,15 +85,17 @@ else
 if (isset($_GET["f"]))
 {
     $infosFilm = RechercheFilmParId($_GET["f"]);
-    $infoListe = getTypeListe($_SESSION["idUtilisateur"], $infosFilm->imdbID);
     
-    if ($infoListe)
+    $typeDejaListe = "pas";
+    
+    if ($infosFilm->Response == "True" && $_SESSION["log"])
     {
-        $typeDejaListe = $infoListe[0]["typeListe"];
-    }
-    else 
-    {
-        $typeDejaListe = "pas";
+        $infoListe = getTypeListe($_SESSION["idUtilisateur"], $infosFilm->imdbID);
+        
+        if ($infoListe)
+        {
+            $typeDejaListe = $infoListe[0]["typeListe"];
+        }
     }
     include_once './vue/pagefilm.php';
     exit();
@@ -200,7 +203,16 @@ if (isset($_POST["suppFilm"]))
     DeleteFilmListe($_SESSION["idUtilisateur"], $_POST["suppFilm"]);
 }
 
-$filmsAccueil = getFilm();
+if (isset($_GET["page"]))
+{
+    $page = $_GET["page"];
+}
+else
+{
+    $page = 1;
+}
+
+$filmsAccueil = getFilm($page,$limite);
 
 include_once './vue/accueil.php';
 exit();

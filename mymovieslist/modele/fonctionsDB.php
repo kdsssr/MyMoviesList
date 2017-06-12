@@ -203,11 +203,24 @@ function getNomUtilisateur($idUtilisateur)
     return $resultat;
 }
 
-function getFilm()
+function getFilm($page,$limite)
 {
     $connexion = getConnexion();
     
-    $requete = $connexion->prepare("SELECT nomFilm,imdbID,count(imdbID) as nbfilms FROM `listes` natural join api group by imdbID");
+    $requete = $connexion->prepare("SELECT nomFilm,imdbID,count(imdbID) as nbfilms FROM `listes` natural join api group by imdbID LIMIT " . (($page-1) * $limite) . "," . $limite );
+    
+    $requete->execute();
+    
+    $resultat = $requete->fetchAll(PDO::FETCH_ASSOC);
+    
+    return $resultat;
+}
+
+function compterFilms()
+{
+    $connexion = getConnexion();
+    
+    $requete = $connexion->prepare("SELECT count(distinct imdbID) as nbFilms FROM listes");
     
     $requete->execute();
     

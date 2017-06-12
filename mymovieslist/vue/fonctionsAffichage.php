@@ -166,3 +166,28 @@ function AfficherAccueil($films)
     
     echo '</table>';
 }
+
+function afficherBtnPages($limite,$pActuelle)
+{
+    $nbFilms = compterFilms();
+    
+    $nbPage = ceil($nbFilms[0]["nbFilms"] /$limite);
+    
+    echo '<ul class="pagination justify-content-center">';
+    
+    for ($i = 1; $i <= $nbPage; $i++)
+    {
+        if ($i == $pActuelle)
+        {
+            echo '<li class="page-item active"><a class="page-link" href="index.php?page=' . $i .'">' . $i .'</a></li>';
+        }  
+        else
+        {
+            echo '<li class="page-item"><a class="page-link" href="index.php?page=' . $i .'">' . $i .'</a></li>';
+        }
+        
+    }
+    
+    echo '</ul>';
+    
+}
