@@ -200,6 +200,8 @@ if (isset($_POST["suppFilm"]))
     DeleteFilmListe($_SESSION["idUtilisateur"], $_POST["suppFilm"]);
 }
 
+$filmsAccueil = getFilm();
+
 include_once './vue/accueil.php';
 exit();
 

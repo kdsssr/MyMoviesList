@@ -148,7 +148,20 @@ function AfficherListeAutre($laListe,$type,$nomUtilisateur)
     
     foreach ($laListe as $key => $value)
     {
-        echo '<tr><td  class="align-middle" colspan="3" ><a href="index.php?f=' . $value["imdbID"] .'">' . $value["nomFilm"] .'</a></td></tr>';
+        echo '<tr><td  class="align-middle" ><a href="index.php?f=' . $value["imdbID"] .'">' . $value["nomFilm"] .'</a></td></tr>';
+    }
+    
+    echo '</table>';
+}
+
+function AfficherAccueil($films)
+{
+    echo '<table class="table table-striped table-inverse"><tr><th>Nom</th><th>Nombre d\'apparition</th></tr>';
+    
+    foreach ($films as $key => $value)
+    {
+        echo '<tr><td  class="align-middle" ><a href="index.php?f=' . $value["imdbID"] .'">' . $value["nomFilm"] .'</a></td>'
+                . '<td>' . $value["nbfilms"] .'</td></tr>';
     }
     
     echo '</table>';
