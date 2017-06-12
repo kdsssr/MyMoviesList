@@ -212,7 +212,62 @@ else
     $page = 1;
 }
 
-$filmsAccueil = getFilm($page,$limite);
+if (!(isset($_SESSION["tri"])))
+{
+    $_SESSION["tri"] = "anc";
+}
+
+if (isset($_GET["tri"]))
+{
+    switch ($_GET["tri"])
+    {
+        case "ac":
+            $_SESSION["tri"] = "ac";
+            break;
+        case "anc":
+            $_SESSION["tri"] = "anc";
+            break;
+        case "nac":
+            $_SESSION["tri"] = "nac";
+            break;
+        case "nanc":
+            $_SESSION["tri"] = "nanc";
+            break;
+            break;
+        default:
+            $_SESSION["tri"] = "ac";
+            break;
+    }
+}
+
+switch ($_SESSION["tri"])
+{
+    case "ac":
+        $filmsAccueil = getFilm($page,$limite,"nomFilm","asc");
+        $triA = "nc";
+        $triNA = "nc";
+        break;
+    case "anc":
+        $filmsAccueil = getFilm($page,$limite,"nomFilm","desc");
+        $triA = "c";
+        $triNA = "nc";
+        break;
+    case "nac":
+        $filmsAccueil = getFilm($page,$limite,"nbFilms","asc");
+        $triA = "nc";
+        $triNA = "nc";
+        break;
+    case "nanc":
+        $filmsAccueil = getFilm($page,$limite,"nbFilms","desc");
+        $triA = "nc";
+        $triNA = "c";
+        break;
+    default:
+        $filmsAccueil = getFilm($page,$limite,"nomFilm","asc");
+        $triA = "nc";
+        $triNA = "nc";
+        break;
+}
 
 include_once './vue/accueil.php';
 exit();

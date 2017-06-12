@@ -154,9 +154,10 @@ function AfficherListeAutre($laListe,$type,$nomUtilisateur)
     echo '</table>';
 }
 
-function AfficherAccueil($films)
+function AfficherAccueil($films,$triNom,$triNombre)
 {
-    echo '<table class="table table-striped table-inverse"><tr><th>Nom</th><th>Nombre d\'apparition</th></tr>';
+    echo '<table class="table table-striped table-inverse"><tr><th>Nom <a href="index.php?tri=a' . $triNom .'"><img src="./vue/img/tri.png" style="width: 20px;" alt="Tri"></a></th>'
+    . '<th>Nombre d\'apparition <a href="index.php?tri=na' . $triNombre .'"><img src="./vue/img/tri.png" style="width: 20px;" alt="Tri"></a></th></tr>';
     
     foreach ($films as $key => $value)
     {
@@ -167,7 +168,7 @@ function AfficherAccueil($films)
     echo '</table>';
 }
 
-function afficherBtnPages($limite,$pActuelle)
+function AfficherBtnPages($limite,$pActuelle)
 {
     $nbFilms = compterFilms();
     

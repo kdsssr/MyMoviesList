@@ -203,11 +203,12 @@ function getNomUtilisateur($idUtilisateur)
     return $resultat;
 }
 
-function getFilm($page,$limite)
+function getFilm($page,$limite,$tri,$ordre)
 {
     $connexion = getConnexion();
     
-    $requete = $connexion->prepare("SELECT nomFilm,imdbID,count(imdbID) as nbfilms FROM `listes` natural join api group by imdbID LIMIT " . (($page-1) * $limite) . "," . $limite );
+    $requete = $connexion->prepare("SELECT nomFilm,imdbID,count(imdbID) as nbfilms FROM `listes` natural join api group by imdbID order by " . $tri . " " . $ordre
+            . " LIMIT " . (($page-1) * $limite) . "," . $limite );
     
     $requete->execute();
     
