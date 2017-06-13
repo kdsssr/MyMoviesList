@@ -13,7 +13,7 @@ DEFINE('DB_PASS', "cinema");
  * Se connecte à la base de donnée
  * @return \PDO retourne la connexion à la base de donnée
  */
-function getConnexion()
+function GetConnexion()
 {
     static $dbb = null;
     
@@ -41,7 +41,7 @@ function getConnexion()
  */
 function VerifierLogin($login,$mdp) 
 {
-    $connexion = getConnexion();
+    $connexion = GetConnexion();
     
     $requete = $connexion->prepare("select pseudo,idUtilisateur from utilisateurs where pseudo = :pseudo and mdp = :mdp");
     
@@ -60,9 +60,9 @@ function VerifierLogin($login,$mdp)
  * @param string $idFilm L'id du film dont on souhaite avoir les commentaires
  * @return {tableau associatif} retourne un tableau de tableau de commentaires
  */
-function getCommentaire($idFilm)
+function GetCommentaire($idFilm)
 {
-    $connexion = getConnexion();
+    $connexion = GetConnexion();
     
     $requete = $connexion->prepare("select commentaire,pseudo FROM avis natural join utilisateurs WHERE imdbID = :id");
     
@@ -75,6 +75,19 @@ function getCommentaire($idFilm)
     return $resultat;
 }
 
+function AjouterCommentaire($idUtilisateur,$idFilm,$commentaire)
+{
+    $connexion = GetConnexion();
+    
+    $requete = $connexion->prepare("insert into avis (idUtilisateur, imdbID, commentaire) VALUES (:idUtilisateur,:idFilm,:commentaire)");
+    
+    $requete->bindParam(":idUtilisateur", $idUtilisateur, PDO::PARAM_INT);
+    $requete->bindParam(":idFilm", $idFilm, PDO::PARAM_STR);
+    $requete->bindParam(":commentaire", $commentaire, PDO::PARAM_STR);
+    
+    $requete->execute();
+}
+
 /**
  * Rajoute le film voulu par l'utilisateur dans la liste voulu
  * @param int $idUtilisateur
@@ -83,7 +96,7 @@ function getCommentaire($idFilm)
  */
 function AjouterFilmListe($idUtilisateur,$idFilm,$typeListe)
 {
-    $connexion = getConnexion();
+    $connexion = GetConnexion();
     
     $requete = $connexion->prepare("INSERT INTO listes (typeListe, idUtilisateur, imdbID) VALUES (:type,:idUtilisateur,:idFilm)");
     
@@ -101,7 +114,7 @@ function AjouterFilmListe($idUtilisateur,$idFilm,$typeListe)
  */
 function AjouterFilmBDD($idFilm,$nom)
 {
-    $connexion = getConnexion();
+    $connexion = GetConnexion();
     
     $requete = $connexion->prepare("INSERT INTO api (imdbID,nomFilm) VALUES (:idFilm,:nom)");
     
@@ -118,7 +131,7 @@ function AjouterFilmBDD($idFilm,$nom)
  */
 function VerifierFilmExiste($id)
 {
-    $connexion = getConnexion();
+    $connexion = GetConnexion();
     
     $requete = $connexion->prepare("select * FROM api WHERE imdbID = :id");
     
@@ -131,9 +144,9 @@ function VerifierFilmExiste($id)
     return $resultat;
 }
 
-function getFilmListe($idUtilisateur,$type)
+function GetFilmListe($idUtilisateur,$type)
 {
-    $connexion = getConnexion();
+    $connexion = GetConnexion();
     
     $requete = $connexion->prepare("select * FROM listes natural join api WHERE idUtilisateur = :id and typeListe = :type order by nomFilm");
     
@@ -149,7 +162,7 @@ function getFilmListe($idUtilisateur,$type)
 
 function DeleteFilmListe($idUtilisateur,$idFilm)
 {
-    $connexion = getConnexion();
+    $connexion = GetConnexion();
     
     $requete = $connexion->prepare("delete FROM listes WHERE idUtilisateur = :idUtilisateur and imdbID = :idFilm");
     
@@ -159,9 +172,9 @@ function DeleteFilmListe($idUtilisateur,$idFilm)
     $requete->execute();
 }
 
-function getTypeListe($idUtilisateur,$idFilm)
+function GetTypeListe($idUtilisateur,$idFilm)
 {
-    $connexion = getConnexion();
+    $connexion = GetConnexion();
     
     $requete = $connexion->prepare("select typeListe FROM listes WHERE idUtilisateur = :idUtilisateur and imdbID = :idFilm");
     
@@ -175,9 +188,9 @@ function getTypeListe($idUtilisateur,$idFilm)
     return $resultat;
 }
 
-function updateListe($idUtilisateur,$idFilm,$type)
+function UpdateListe($idUtilisateur,$idFilm,$type)
 {
-    $connexion = getConnexion();
+    $connexion = GetConnexion();
     
     $requete = $connexion->prepare("UPDATE listes set typeListe =:NouvType WHERE idUtilisateur = :idUtilisateur and imdbID = :idFilm");
     
@@ -188,9 +201,9 @@ function updateListe($idUtilisateur,$idFilm,$type)
     $requete->execute();
 }
 
-function getNomUtilisateur($idUtilisateur)
+function GetNomUtilisateur($idUtilisateur)
 {
-    $connexion = getConnexion();
+    $connexion = GetConnexion();
     
     $requete = $connexion->prepare("select pseudo FROM utilisateurs WHERE idUtilisateur = :id");
     
@@ -203,9 +216,9 @@ function getNomUtilisateur($idUtilisateur)
     return $resultat;
 }
 
-function getFilm($page,$limite,$tri,$ordre)
+function GetFilm($page,$limite,$tri,$ordre)
 {
-    $connexion = getConnexion();
+    $connexion = GetConnexion();
     
     $requete = $connexion->prepare("SELECT nomFilm,imdbID,count(imdbID) as nbfilms FROM `listes` natural join api group by imdbID order by " . $tri . " " . $ordre
             . " LIMIT " . (($page-1) * $limite) . "," . $limite );
@@ -217,9 +230,9 @@ function getFilm($page,$limite,$tri,$ordre)
     return $resultat;
 }
 
-function compterFilms()
+function CompterFilms()
 {
-    $connexion = getConnexion();
+    $connexion = GetConnexion();
     
     $requete = $connexion->prepare("SELECT count(distinct imdbID) as nbFilms FROM listes");
     
@@ -230,9 +243,9 @@ function compterFilms()
     return $resultat;
 }
 
-function compterFilmDansListe($id)
+function CompterFilmDansListe($id)
 {
-    $connexion = getConnexion();
+    $connexion = GetConnexion();
     
     $requete = $connexion->prepare('SELECT (select count(typeListe) FROM listes WHERE typeListe = "aVoir" and imdbID = :id) as nbFilmsAvoir,'
             . '(select count(typeListe)as filmsVu FROM listes WHERE typeListe = "vu" and imdbID = :id) as nbFilmsVu');

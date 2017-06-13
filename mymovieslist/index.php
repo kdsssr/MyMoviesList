@@ -16,12 +16,10 @@ $limite = 10;
 
 if (isset($_SESSION["idUtilisateur"]))
 {
-    $etat = "Vous êtes connecté.";
     $_SESSION["log"] = true;
 }
 else
 {
-    $etat = "Vous n'êtes pas connecté.";
     $_SESSION["log"] = false;
     $_SESSION["pseudo"] = "";
 }
@@ -36,7 +34,6 @@ if (isset($_POST["deconnecter"]) && $_SESSION["log"])
 {
     session_destroy();
     $_SESSION = array();
-    $etat = "Vous êtes déconnecté";
     $_SESSION["log"] = false;
     $_SESSION["pseudo"] = "";
 }
@@ -63,11 +60,11 @@ if (isset($_REQUEST["rechercheTitre"])&& isset($_REQUEST["categorie"]))
 
         if ($infosFilm->Response == "True")
         {
-            $commentairesFilm = getCommentaire($infosFilm->imdbID);
+            $commentairesFilm = GetCommentaire($infosFilm->imdbID);
             
             if ($_SESSION["log"])
             {
-                $infoListe = getTypeListe($_SESSION["idUtilisateur"], $infosFilm->imdbID);
+                $infoListe = GetTypeListe($_SESSION["idUtilisateur"], $infosFilm->imdbID);
 
                 if ($infoListe)
                 {
@@ -98,11 +95,11 @@ if (isset($_GET["f"]))
     
     if ($infosFilm->Response == "True")
     {
-        $commentairesFilm = getCommentaire($infosFilm->imdbID);
+        $commentairesFilm = GetCommentaire($infosFilm->imdbID);
 
         if ($_SESSION["log"])
         {
-            $infoListe = getTypeListe($_SESSION["idUtilisateur"], $infosFilm->imdbID);
+            $infoListe = GetTypeListe($_SESSION["idUtilisateur"], $infosFilm->imdbID);
 
             if ($infoListe)
             {
@@ -137,7 +134,7 @@ if (isset($_POST["typeListe"]) && $_SESSION["log"])
             AjouterFilmBDD($filmAjoute->imdbID,$filmAjoute->Title);
         }
         
-        $listeActuelle = getTypeListe($_SESSION["idUtilisateur"], $filmAjoute->imdbID);
+        $listeActuelle = GetTypeListe($_SESSION["idUtilisateur"], $filmAjoute->imdbID);
         
         if (!($listeActuelle))
         {
@@ -151,7 +148,7 @@ if (isset($_POST["typeListe"]) && $_SESSION["log"])
         else if ($listeActuelle[0]["typeListe"] != $_POST["typeListe"])
         {
             $etat = "Ce film a été déplacé de liste.";
-            updateListe($_SESSION["idUtilisateur"], $filmAjoute->imdbID, $_POST["typeListe"]);
+            UpdateListe($_SESSION["idUtilisateur"], $filmAjoute->imdbID, $_POST["typeListe"]);
         }
         
         $infosFilm = RechercheFilmParTitre($filmAjoute->Title);
@@ -160,11 +157,11 @@ if (isset($_POST["typeListe"]) && $_SESSION["log"])
 
         if ($infosFilm->Response == "True")
         {
-            $commentairesFilm = getCommentaire($infosFilm->imdbID);
+            $commentairesFilm = GetCommentaire($infosFilm->imdbID);
 
             if ($_SESSION["log"])
             {
-                $infoListe = getTypeListe($_SESSION["idUtilisateur"], $infosFilm->imdbID);
+                $infoListe = GetTypeListe($_SESSION["idUtilisateur"], $infosFilm->imdbID);
 
                 if ($infoListe)
                 {
@@ -195,7 +192,7 @@ else if (!($_SESSION["log"])&& isset($_POST["typeListe"]))
 
 if (isset($_GET["type"])  && $_SESSION["log"])
 {
-    $listeFilms = getFilmListe($_SESSION["idUtilisateur"], $_GET["type"]);
+    $listeFilms = GetFilmListe($_SESSION["idUtilisateur"], $_GET["type"]);
     $typeListe = $_GET["type"];
     $perso = true;
     $nom = $_SESSION["pseudo"];
@@ -205,7 +202,7 @@ if (isset($_GET["type"])  && $_SESSION["log"])
 
 if (isset($_POST["type"])&& $_SESSION["log"])
 {
-    $listeFilms = getFilmListe($_POST["utilisateurListe"], $_POST["type"]);
+    $listeFilms = GetFilmListe($_POST["utilisateurListe"], $_POST["type"]);
     $typeListe = $_POST["type"];
     
     if (isset($_SESSION["idUtilisateur"]))
@@ -218,13 +215,13 @@ if (isset($_POST["type"])&& $_SESSION["log"])
         else
         {
             $perso = false;
-            $nom = getNomUtilisateur($_POST["utilisateurListe"])[0]["pseudo"];
+            $nom = GetNomUtilisateur($_POST["utilisateurListe"])[0]["pseudo"];
         }
     }
     else
     {
         $perso = false;
-        $nom = getNomUtilisateur($_POST["utilisateurListe"])[0]["pseudo"];
+        $nom = GetNomUtilisateur($_POST["utilisateurListe"])[0]["pseudo"];
     }
     
     include_once './vue/liste.php';
@@ -233,13 +230,13 @@ if (isset($_POST["type"])&& $_SESSION["log"])
 
 if (isset($_POST["filmMaJ"]))
 {
-    $typeListeAvant = getTypeListe($_SESSION["idUtilisateur"], $_POST["filmMaJ"]);
+    $typeListeAvant = GetTypeListe($_SESSION["idUtilisateur"], $_POST["filmMaJ"]);
     
     if ($typeListeAvant[0]["typeListe"] == "vu")
     {
-        updateListe($_SESSION["idUtilisateur"], $_POST["filmMaJ"], "aVoir");
+        UpdateListe($_SESSION["idUtilisateur"], $_POST["filmMaJ"], "aVoir");
         
-        $listeFilms = getFilmListe($_SESSION["idUtilisateur"], $typeListeAvant[0]["typeListe"]);
+        $listeFilms = GetFilmListe($_SESSION["idUtilisateur"], $typeListeAvant[0]["typeListe"]);
         $typeListe = $typeListeAvant[0]["typeListe"];
         $perso = true;
         $nom = $_SESSION["pseudo"];
@@ -248,9 +245,9 @@ if (isset($_POST["filmMaJ"]))
     }
     else if ($typeListeAvant[0]["typeListe"] == "aVoir")
     {
-        updateListe($_SESSION["idUtilisateur"], $_POST["filmMaJ"], "vu");
+        UpdateListe($_SESSION["idUtilisateur"], $_POST["filmMaJ"], "vu");
         
-        $listeFilms = getFilmListe($_SESSION["idUtilisateur"], $typeListeAvant[0]["typeListe"]);
+        $listeFilms = GetFilmListe($_SESSION["idUtilisateur"], $typeListeAvant[0]["typeListe"]);
         $typeListe = $typeListeAvant[0]["typeListe"];
         $perso = true;
         $nom = $_SESSION["pseudo"];
@@ -262,18 +259,58 @@ if (isset($_POST["filmMaJ"]))
 
 if (isset($_POST["suppFilm"]))
 {
-    $typeListeAvant = getTypeListe($_SESSION["idUtilisateur"], $_POST["suppFilm"]);
+    $typeListeAvant = GetTypeListe($_SESSION["idUtilisateur"], $_POST["suppFilm"]);
     
     if ($typeListeAvant)
     {
         DeleteFilmListe($_SESSION["idUtilisateur"], $_POST["suppFilm"]);
 
-        $listeFilms = getFilmListe($_SESSION["idUtilisateur"], $typeListeAvant[0]["typeListe"]);
+        $listeFilms = GetFilmListe($_SESSION["idUtilisateur"], $typeListeAvant[0]["typeListe"]);
         $typeListe = $typeListeAvant[0]["typeListe"];
         $perso = true;
         $nom = $_SESSION["pseudo"];
         include_once './vue/liste.php';
         exit();
+    }
+}
+
+if (isset($_REQUEST["commenter"]) && $_SESSION["log"])
+{
+    $filmCommente = RechercheFilmParId($_POST["filmID"]);
+    
+    if ($filmCommente->Response == "True")
+    {
+        if ($_REQUEST["commentaire"] != "")
+        {
+            AjouterCommentaire($_SESSION["idUtilisateur"], $_POST["filmID"], $_REQUEST["commentaire"]);
+        }
+        
+        $infosFilm = RechercheFilmParTitre($filmCommente->Title);
+    
+        $typeDejaListe = "pas";
+
+        if ($infosFilm->Response == "True")
+        {
+            $commentairesFilm = GetCommentaire($infosFilm->imdbID);
+
+            if ($_SESSION["log"])
+            {
+                $infoListe = GetTypeListe($_SESSION["idUtilisateur"], $infosFilm->imdbID);
+
+                if ($infoListe)
+                {
+                    $typeDejaListe = $infoListe[0]["typeListe"];
+                }
+            }
+        }
+        else
+        {
+            $commentairesFilm = null;
+        }
+
+        include_once './vue/pagefilm.php';
+        exit();
+        
     }
 }
 
@@ -317,27 +354,27 @@ if (isset($_GET["tri"]))
 switch ($_SESSION["tri"])
 {
     case "ac":
-        $filmsAccueil = getFilm($page,$limite,"nomFilm","asc");
+        $filmsAccueil = GetFilm($page,$limite,"nomFilm","asc");
         $triA = "nc";
         $triNA = "nc";
         break;
     case "anc":
-        $filmsAccueil = getFilm($page,$limite,"nomFilm","desc");
+        $filmsAccueil = GetFilm($page,$limite,"nomFilm","desc");
         $triA = "c";
         $triNA = "nc";
         break;
     case "nac":
-        $filmsAccueil = getFilm($page,$limite,"nbFilms","asc");
+        $filmsAccueil = GetFilm($page,$limite,"nbFilms","asc");
         $triA = "nc";
         $triNA = "nc";
         break;
     case "nanc":
-        $filmsAccueil = getFilm($page,$limite,"nbFilms","desc");
+        $filmsAccueil = GetFilm($page,$limite,"nbFilms","desc");
         $triA = "nc";
         $triNA = "c";
         break;
     default:
-        $filmsAccueil = getFilm($page,$limite,"nomFilm","asc");
+        $filmsAccueil = GetFilm($page,$limite,"nomFilm","asc");
         $triA = "nc";
         $triNA = "nc";
         break;

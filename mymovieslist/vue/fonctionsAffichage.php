@@ -94,7 +94,7 @@ function AfficherFilm($film,$listeDejaActive)
             $aVoir = "";
         }
         
-        $nbDansListes = compterFilmDansListe($film->imdbID);
+        $nbDansListes = CompterFilmDansListe($film->imdbID);
         
         echo '<table class="table table-striped" ><tr><th colspan="3" class="display-4 text-center" >' . $film->Title . '</th></tr>'
                 . '<tr><td rowspan="7"><img class="mx-auto d-block" src="' . $film->Poster . '" alt="Poster" style="width: 240px;"></td>'
@@ -120,9 +120,9 @@ function AfficherCommentaires($commentaires)
 {
     if (!(is_null($commentaires)))
     {
-        echo '<div class="form-group" ><textarea class="form-control" placeholder="Ajoutez un commentaire" rows="3" ></textarea>'
-        . '<input type="submit" class="btn btn-primary mt-3" name="commenter" value="Envoyer">'
-        . '<h1 class="display-4">Commentaires</h1>';
+        echo '<div class="form-group" ><textarea name="commentaire" class="form-control" placeholder="Ajoutez un commentaire" rows="3" ></textarea>'
+        . '<input type="submit" class="btn btn-primary mt-3 float-right" name="commenter" value="Envoyer"></div>'
+        . '<h1 class="gauche mt-5" >Commentaires :</h1>';
         
         foreach ($commentaires as $key => $value)
         {
@@ -191,7 +191,7 @@ function AfficherAccueil($films,$triNom,$triNombre)
 
 function AfficherBtnPages($limite,$pActuelle)
 {
-    $nbFilms = compterFilms();
+    $nbFilms = CompterFilms();
     
     $nbPage = ceil($nbFilms[0]["nbFilms"] /$limite);
     

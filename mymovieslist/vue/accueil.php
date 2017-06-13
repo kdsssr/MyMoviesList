@@ -26,7 +26,7 @@ if (!isset($mvc))
         <?php AfficherNav($_SESSION["log"],$_SESSION["pseudo"]); echo $etat;?>
         <div class="container" align="center">
             <h1 class="mb-4 mt-4 display-3">Accueil</h1>
-            <h2 class="mb-4 display-4">Voici les films que les utilisateurs ont ajouté :</h2>
+            <h2 class="mb-4">Voici les films que les utilisateurs ont ajouté :</h2>
             <?php 
             AfficherAccueil($filmsAccueil,$triA,$triNA);
             AfficherBtnPages($limite, $page);
