@@ -75,6 +75,12 @@ function GetCommentaire($idFilm)
     return $resultat;
 }
 
+/**
+ * Ajoute un commentaire a un film
+ * @param int $idUtilisateur L'id dde l'utilisateur qui commente
+ * @param string $idFilm L'id du film à commenté
+ * @param string $commentaire Le commentaire
+ */
 function AjouterCommentaire($idUtilisateur,$idFilm,$commentaire)
 {
     $connexion = GetConnexion();
@@ -90,7 +96,7 @@ function AjouterCommentaire($idUtilisateur,$idFilm,$commentaire)
 
 /**
  * Rajoute le film voulu par l'utilisateur dans la liste voulu
- * @param int $idUtilisateur
+ * @param int $idUtilisateur L'id de l'utilisateur qui a ajouté le film
  * @param string $idFilm L'id du film à rajouter dans la liste
  * @param string $typeListe Le nom de la liste où l'on va rajouter le film
  */
@@ -144,6 +150,12 @@ function VerifierFilmExiste($id)
     return $resultat;
 }
 
+/**
+ * Récupère une des deux listes d'un utilisateur
+ * @param int $idUtilisateur L'id de l'utiisateur à qui appartient la liste
+ * @param string $type Le type de la liste (vu ou à voir)
+ * @return {tableau associatif} retourne un tableau de tableau avec les films qui font partie de cette liste
+ */
 function GetFilmListe($idUtilisateur,$type)
 {
     $connexion = GetConnexion();
@@ -160,6 +172,11 @@ function GetFilmListe($idUtilisateur,$type)
     return $resultat;
 }
 
+/**
+ * Supprime un film de la liste d'un utilisateur
+ * @param int $idUtilisateur L'id de l'utilisateur qui veut le film de sa liste
+ * @param string $idFilm L'id du film à supprimer
+ */
 function DeleteFilmListe($idUtilisateur,$idFilm)
 {
     $connexion = GetConnexion();
@@ -172,6 +189,12 @@ function DeleteFilmListe($idUtilisateur,$idFilm)
     $requete->execute();
 }
 
+/**
+ * Prends le type de la liste où se trouve un film ajouté par un utilisateur
+ * @param int $idUtilisateur L'id de l'utilisateur à qui appartient la liste
+ * @param string $idFilm L'id du film
+ * @return {tableau associatif} retourne un tableau de tableau avec le type de la liste
+ */
 function GetTypeListe($idUtilisateur,$idFilm)
 {
     $connexion = GetConnexion();
@@ -188,6 +211,12 @@ function GetTypeListe($idUtilisateur,$idFilm)
     return $resultat;
 }
 
+/**
+ * Met à jour le type de la liste d'un film d'un utilisateur
+ * @param int $idUtilisateur L'id de l'utilisateur qui veut mettre à jour un film de sa liste
+ * @param string $idFilm L'id du film qui va être mit à jour
+ * @param string $type La liste dans laquelle le film va être changé
+ */
 function UpdateListe($idUtilisateur,$idFilm,$type)
 {
     $connexion = GetConnexion();
@@ -201,6 +230,11 @@ function UpdateListe($idUtilisateur,$idFilm,$type)
     $requete->execute();
 }
 
+/**
+ * Récupère le nom d'un utilisateur avec son id
+ * @param int $idUtilisateur L'id de l'utilisateur que l'on cherche à obentenir le pseudo
+ * @return {tableau associatif} retourne un tableau de tableau avec le nom de l'utilisateur
+ */
 function GetNomUtilisateur($idUtilisateur)
 {
     $connexion = GetConnexion();
@@ -216,6 +250,14 @@ function GetNomUtilisateur($idUtilisateur)
     return $resultat;
 }
 
+/**
+ * Récupère tous les films qui ont été mis dans une liste, une seule fois, trier et par page d'une certaine limite de films
+ * @param int $page Le numéro de la page éffective
+ * @param int $limite La limite de film par page
+ * @param string $tri Le tri qui est effectif (nomFilm ou nbFilms)
+ * @param string $ordre L'ordre du tri (asc ou desc))
+ * @return {tableau associatif} retourne un tableau de tableau avec un nombre limité de films triés et par page
+ */
 function GetFilm($page,$limite,$tri,$ordre)
 {
     $connexion = GetConnexion();
@@ -230,6 +272,10 @@ function GetFilm($page,$limite,$tri,$ordre)
     return $resultat;
 }
 
+/**
+ * Compte le nombre de fois en tout dans toutes les listes
+ * @return {tableau associatif} retourne un tableau de tableau avec le nombre de films
+ */
 function CompterFilms()
 {
     $connexion = GetConnexion();
@@ -243,6 +289,11 @@ function CompterFilms()
     return $resultat;
 }
 
+/**
+ * Compte le nombre de fois qu'un film apparait dans chacune des listes
+ * @param string $id L'id du film
+ * @return {tableau associatif} retourne un tableau de tableau avec le nombrede fois qu'un film apparait dans la liste vu et à voir
+ */
 function CompterFilmDansListe($id)
 {
     $connexion = GetConnexion();

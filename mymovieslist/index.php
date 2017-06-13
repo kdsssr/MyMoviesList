@@ -24,12 +24,14 @@ else
     $_SESSION["pseudo"] = "";
 }
 
+// Vérifie si l'utilisateur à cliquer sur le bouton connecter et qu'il ne soit pas connecté et le dirige si c'est le cas
 if (isset($_POST["connecter"]) && !($_SESSION["log"]))
 {
     include_once './vue/connexion.php';
     exit();
 }
 
+// Vérifie si l'utilisateur à cliquer sur le bouton déconnecter et qu'il ne soit pas déconnecté et le déconnecte si c'est le cas
 if (isset($_POST["deconnecter"]) && $_SESSION["log"])
 {
     session_destroy();

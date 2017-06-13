@@ -116,6 +116,10 @@ function AfficherFilm($film,$listeDejaActive)
     
 }
 
+/**
+ * Affiche les commentaires liés à un film 
+ * @param {tableau associatif} $commentaires Tableau contenant les commentaires
+ */
 function AfficherCommentaires($commentaires)
 {
     if (!(is_null($commentaires)))
@@ -133,6 +137,13 @@ function AfficherCommentaires($commentaires)
     }
 }
 
+/**
+ * 
+ * @param type $liste
+ * @param type $proprietaire
+ * @param type $type
+ * @param type $utilisateur
+ */
 function AfficherListe($liste, $proprietaire, $type,$utilisateur)
 {
     if ($proprietaire)
@@ -145,6 +156,11 @@ function AfficherListe($liste, $proprietaire, $type,$utilisateur)
     }
 }
 
+/**
+ * Affiche sa liste personelle
+ * @param {tableau associatif} $laListe Tableau contenant les films faisant partie de cette liste
+ * @param string $type Le type de la liste (vu ou à voir)
+ */
 function AfficherListePerso($laListe,$type)
 {
     echo '<h1 class="mb-5 mt-5 display-4">Voici votre liste de film ' . $type . '</h1>';
@@ -175,6 +191,12 @@ function AfficherListeAutre($laListe,$type,$nomUtilisateur)
     echo '</table>';
 }
 
+/**
+ * Affiche l'accueil avec les films ajoutés par les utilisateurs et le nombre de fois que le film a été ajouté
+ * @param {tableau associatif} $films Tableau contenant les films avec leur nom et le nombre de fois que le film a été ajouté
+ * @param string $triNom Le tri, pour le nom, qui serra éffectif si l'utilisateur clique sur le lien de tri
+ * @param string $triNombre Le tri, pour le nombre d'apparition, qui serra éffectif si l'utilisateur clique sur le lien de tri
+ */
 function AfficherAccueil($films,$triNom,$triNombre)
 {
     echo '<table class="table table-striped table-inverse"><tr><th>Nom <a href="index.php?tri=a' . $triNom .'"><img src="./vue/img/tri.png" style="width: 20px;" alt="Tri"></a></th>'
@@ -189,6 +211,11 @@ function AfficherAccueil($films,$triNom,$triNombre)
     echo '</table>';
 }
 
+/**
+ * Affiche les boutons pour la pagination par rapport aux nombre de films
+ * @param int $limite La limite de film par page, qui sert à calculer le nombre de page
+ * @param int $pActuelle La page où se trouve actuellement l'utilisateur
+ */
 function AfficherBtnPages($limite,$pActuelle)
 {
     $nbFilms = CompterFilms();
