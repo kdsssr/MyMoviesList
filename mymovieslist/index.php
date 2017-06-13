@@ -52,6 +52,7 @@ if (isset($_REQUEST["logger"]) && isset($_REQUEST["mdp"]))
     } 
 }
 
+// Vérifie si l'utilisateur à taper quelque chose dans la barre de recherche
 if (isset($_REQUEST["rechercheTitre"])&& isset($_REQUEST["categorie"]))
 {
     if ($_REQUEST["categorie"] == "film")
@@ -89,6 +90,7 @@ else
      $commentairesFilm = null;
 }
 
+// Vérifie si l'utilisateur à cliqué sur un lien menant vers un film
 if (isset($_GET["f"]))
 {
     $infosFilm = RechercheFilmParId($_GET["f"]);
@@ -123,6 +125,7 @@ else
      $commentairesFilm = null;
 }
 
+// Vérifie si l'utilisateur a voulu ajouter un film dans une de ses listes
 if (isset($_POST["typeListe"]) && $_SESSION["log"])
 {
     
@@ -192,14 +195,18 @@ else if (!($_SESSION["log"])&& isset($_POST["typeListe"]))
     exit();
 }
 
+// Vérifie si l'utilisateur veut accéder à ses listes, il faut donc qu'il soit connecté
 if (isset($_GET["type"])  && $_SESSION["log"])
 {
-    $listeFilms = GetFilmListe($_SESSION["idUtilisateur"], $_GET["type"]);
-    $typeListe = $_GET["type"];
-    $perso = true;
-    $nom = $_SESSION["pseudo"];
-    include_once './vue/liste.php';
-    exit();
+    if ($_GET["type"] == "vu" || $_GET["type"] == "aVoir")
+    {
+        $listeFilms = GetFilmListe($_SESSION["idUtilisateur"], $_GET["type"]);
+        $typeListe = $_GET["type"];
+        $perso = true;
+        $nom = $_SESSION["pseudo"];
+        include_once './vue/liste.php';
+        exit();
+    }
 }
 
 if (isset($_POST["type"])&& $_SESSION["log"])
@@ -230,6 +237,7 @@ if (isset($_POST["type"])&& $_SESSION["log"])
     exit();
 }
 
+// Vérifie si l'utilisateur veut mettre à jour un film de la liste
 if (isset($_POST["filmMaJ"]))
 {
     $typeListeAvant = GetTypeListe($_SESSION["idUtilisateur"], $_POST["filmMaJ"]);
@@ -259,6 +267,7 @@ if (isset($_POST["filmMaJ"]))
     
 }
 
+// Vérifie si l'utilisateur veut supprimer un film de la liste
 if (isset($_POST["suppFilm"]))
 {
     $typeListeAvant = GetTypeListe($_SESSION["idUtilisateur"], $_POST["suppFilm"]);
@@ -276,15 +285,19 @@ if (isset($_POST["suppFilm"]))
     }
 }
 
+// Vérifie si l'utilisateur veut commenter un film
 if (isset($_REQUEST["commenter"]) && $_SESSION["log"])
 {
     $filmCommente = RechercheFilmParId($_POST["filmID"]);
     
     if ($filmCommente->Response == "True")
     {
-        if ($_REQUEST["commentaire"] != "")
+        $commentaire = filter_var($_REQUEST["commentaire"], FILTER_SANITIZE_STRING);
+        
+        if ($commentaire != "")
         {
-            AjouterCommentaire($_SESSION["idUtilisateur"], $_POST["filmID"], $_REQUEST["commentaire"]);
+            AjouterCommentaire($_SESSION["idUtilisateur"], $_POST["filmID"], $commentaire);
+            $_REQUEST = null;
         }
         
         $infosFilm = RechercheFilmParTitre($filmCommente->Title);
@@ -315,7 +328,7 @@ if (isset($_REQUEST["commenter"]) && $_SESSION["log"])
         
     }
 }
-
+// Vérifie si l'u
 if (isset($_GET["page"]))
 {
     $page = $_GET["page"];
@@ -330,6 +343,7 @@ if (!(isset($_SESSION["tri"])))
     $_SESSION["tri"] = "anc";
 }
 
+// Vérifie si l'utilisateur à cliqué sur l'un des deux boutons de tri
 if (isset($_GET["tri"]))
 {
     switch ($_GET["tri"])
@@ -353,36 +367,45 @@ if (isset($_GET["tri"]))
     }
 }
 
+// Sélectionne le bon tri et récupère les films avec les bons tris en fonction de la variable tri dans la session
 switch ($_SESSION["tri"])
 {
     case "ac":
         $filmsAccueil = GetFilm($page,$limite,"nomFilm","asc");
         $triA = "nc";
         $triNA = "nc";
+        include_once './vue/accueil.php';
+        exit();
         break;
     case "anc":
         $filmsAccueil = GetFilm($page,$limite,"nomFilm","desc");
         $triA = "c";
         $triNA = "nc";
+        include_once './vue/accueil.php';
+        exit();
         break;
     case "nac":
         $filmsAccueil = GetFilm($page,$limite,"nbFilms","asc");
         $triA = "nc";
         $triNA = "nc";
+        include_once './vue/accueil.php';
+        exit();
         break;
     case "nanc":
         $filmsAccueil = GetFilm($page,$limite,"nbFilms","desc");
         $triA = "nc";
         $triNA = "c";
+        include_once './vue/accueil.php';
+        exit();
         break;
     default:
         $filmsAccueil = GetFilm($page,$limite,"nomFilm","asc");
         $triA = "nc";
         $triNA = "nc";
+        include_once './vue/accueil.php';
+        exit();
         break;
 }
 
-include_once './vue/accueil.php';
-exit();
 
 ?>
