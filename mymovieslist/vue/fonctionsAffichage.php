@@ -154,8 +154,8 @@ function AfficherListePerso($laListe,$type)
     foreach ($laListe as $key => $value)
     {
         echo '<tr><td class="align-middle" ><a href="index.php?f=' . $value["imdbID"] .'">' . $value["nomFilm"] .'</a></td><td>'
-                . '<button class="btn btn-outline-info" type="submit" style="border: none;" name="filmMaJ" value="' . $value["imdbID"] .'" ><img src="./vue/img/changer.png" style="width: 25px;" alt="Supprimer"></button></td><td>'
-                . '<button class="btn  btn-outline-danger" type="submit" style="border: none;" name="suppFilm" value="' . $value["imdbID"] .'">'
+                . '<button class="btn btn-outline-info pas-bord" type="submit" name="filmMaJ" value="' . $value["imdbID"] .'" ><img src="./vue/img/changer.png" style="width: 25px;" alt="Supprimer"></button></td><td>'
+                . '<button class="btn  btn-outline-danger pas-bord" type="submit" name="suppFilm" value="' . $value["imdbID"] .'">'
                 . '<img src="./vue/img/croix.png" style="width: 25px;" alt="Supprimer"></button></tr>';
     }
     
