@@ -47,39 +47,47 @@ if (isset($_REQUEST["logger"]) && isset($_REQUEST["mdp"]))
     
     if ($Utilisateur)
     {
-        $etat = "Vous êtes connecté";
         $_SESSION["idUtilisateur"] = $Utilisateur[0]["idUtilisateur"];
         $_SESSION["pseudo"] = $Utilisateur[0]["pseudo"];
         $_SESSION["log"] = true;
     } 
-    else
-    {
-        $etat = "Echec d'identification";
-    }
 }
 
-if (isset($_REQUEST["rechercheTitre"]))
+if (isset($_REQUEST["rechercheTitre"])&& isset($_REQUEST["categorie"]))
 {
-    $infosFilm = RechercheFilmParTitre($_REQUEST["rechercheTitre"]);
-    
-    $typeDejaListe = "pas";
-    
-    if ($infosFilm->Response == "True" && $_SESSION["log"])
+    if ($_REQUEST["categorie"] == "film")
     {
-        $infoListe = getTypeListe($_SESSION["idUtilisateur"], $infosFilm->imdbID);
-        
-        if ($infoListe)
+        $infosFilm = RechercheFilmParTitre($_REQUEST["rechercheTitre"]);
+
+        $typeDejaListe = "pas";
+
+        if ($infosFilm->Response == "True")
         {
-            $typeDejaListe = $infoListe[0]["typeListe"];
+            $commentairesFilm = getCommentaire($infosFilm->imdbID);
+            
+            if ($_SESSION["log"])
+            {
+                $infoListe = getTypeListe($_SESSION["idUtilisateur"], $infosFilm->imdbID);
+
+                if ($infoListe)
+                {
+                    $typeDejaListe = $infoListe[0]["typeListe"];
+                }
+            }
         }
+        else
+        {
+            $commentairesFilm = null;
+        }
+
+        include_once './vue/pagefilm.php';
+        exit();
     }
-    
-    include_once './vue/pagefilm.php';
-    exit();
 }
 else
 {
      $infosFilm = null;
+     $commentairesFilm = null;
 }
 
 if (isset($_GET["f"]))
@@ -88,21 +96,32 @@ if (isset($_GET["f"]))
     
     $typeDejaListe = "pas";
     
-    if ($infosFilm->Response == "True" && $_SESSION["log"])
+    if ($infosFilm->Response == "True")
     {
-        $infoListe = getTypeListe($_SESSION["idUtilisateur"], $infosFilm->imdbID);
-        
-        if ($infoListe)
+        $commentairesFilm = getCommentaire($infosFilm->imdbID);
+
+        if ($_SESSION["log"])
         {
-            $typeDejaListe = $infoListe[0]["typeListe"];
+            $infoListe = getTypeListe($_SESSION["idUtilisateur"], $infosFilm->imdbID);
+
+            if ($infoListe)
+            {
+                $typeDejaListe = $infoListe[0]["typeListe"];
+            }
         }
     }
+    else
+    {
+        $commentairesFilm = null;
+    }
+    
     include_once './vue/pagefilm.php';
     exit();
 }
 else
 {
      $infosFilm = null;
+     $commentairesFilm = null;
 }
 
 if (isset($_POST["typeListe"]) && $_SESSION["log"])
@@ -134,11 +153,39 @@ if (isset($_POST["typeListe"]) && $_SESSION["log"])
             $etat = "Ce film a été déplacé de liste.";
             updateListe($_SESSION["idUtilisateur"], $filmAjoute->imdbID, $_POST["typeListe"]);
         }
+        
+        $infosFilm = RechercheFilmParTitre($filmAjoute->Title);
+
+        $typeDejaListe = "pas";
+
+        if ($infosFilm->Response == "True")
+        {
+            $commentairesFilm = getCommentaire($infosFilm->imdbID);
+
+            if ($_SESSION["log"])
+            {
+                $infoListe = getTypeListe($_SESSION["idUtilisateur"], $infosFilm->imdbID);
+
+                if ($infoListe)
+                {
+                    $typeDejaListe = $infoListe[0]["typeListe"];
+                }
+            }
+        }
+        else
+        {
+            $commentairesFilm = null;
+        }
+
+        include_once './vue/pagefilm.php';
+        exit();
+        
     }
     else
     {
         $etat = "Le film que vous avez essayé de rajouter n'existe pas.";
     }
+    
 }
 else if (!($_SESSION["log"])&& isset($_POST["typeListe"]))
 {
@@ -191,16 +238,43 @@ if (isset($_POST["filmMaJ"]))
     if ($typeListeAvant[0]["typeListe"] == "vu")
     {
         updateListe($_SESSION["idUtilisateur"], $_POST["filmMaJ"], "aVoir");
+        
+        $listeFilms = getFilmListe($_SESSION["idUtilisateur"], $typeListeAvant[0]["typeListe"]);
+        $typeListe = $typeListeAvant[0]["typeListe"];
+        $perso = true;
+        $nom = $_SESSION["pseudo"];
+        include_once './vue/liste.php';
+        exit();
     }
     else if ($typeListeAvant[0]["typeListe"] == "aVoir")
     {
         updateListe($_SESSION["idUtilisateur"], $_POST["filmMaJ"], "vu");
+        
+        $listeFilms = getFilmListe($_SESSION["idUtilisateur"], $typeListeAvant[0]["typeListe"]);
+        $typeListe = $typeListeAvant[0]["typeListe"];
+        $perso = true;
+        $nom = $_SESSION["pseudo"];
+        include_once './vue/liste.php';
+        exit();
     }
+    
 }
 
 if (isset($_POST["suppFilm"]))
 {
-    DeleteFilmListe($_SESSION["idUtilisateur"], $_POST["suppFilm"]);
+    $typeListeAvant = getTypeListe($_SESSION["idUtilisateur"], $_POST["suppFilm"]);
+    
+    if ($typeListeAvant)
+    {
+        DeleteFilmListe($_SESSION["idUtilisateur"], $_POST["suppFilm"]);
+
+        $listeFilms = getFilmListe($_SESSION["idUtilisateur"], $typeListeAvant[0]["typeListe"]);
+        $typeListe = $typeListeAvant[0]["typeListe"];
+        $perso = true;
+        $nom = $_SESSION["pseudo"];
+        include_once './vue/liste.php';
+        exit();
+    }
 }
 
 if (isset($_GET["page"]))

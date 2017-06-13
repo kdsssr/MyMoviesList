@@ -31,8 +31,8 @@ function AfficherNav($etatUtilisateur)
                     Mes listes
                     </a>
                     <div class="dropdown-menu" aria-labelledby="Preview">
-                    <a class="dropdown-item" href="index.php?type=AVoir">A voir</a>
-                    <a class="dropdown-item" href="index.php?type=Vu">Vu</a>
+                    <a class="dropdown-item" href="index.php?type=aVoir">A voir</a>
+                    <a class="dropdown-item" href="index.php?type=vu">Vu</a>
                     </div></li>';
                 }
                 ?>
@@ -97,12 +97,13 @@ function AfficherFilm($film,$listeDejaActive)
         $nbDansListes = compterFilmDansListe($film->imdbID);
         
         echo '<table class="table table-striped" ><tr><th colspan="3" class="display-4 text-center" >' . $film->Title . '</th></tr>'
-                . '<tr><td rowspan="6"><img class="mx-auto d-block" src="' . $film->Poster . '" alt="Poster" style="width: 200px;"></td>'
+                . '<tr><td rowspan="7"><img class="mx-auto d-block" src="' . $film->Poster . '" alt="Poster" style="width: 240px;"></td>'
                 . '<th>Date de sortie : </th><td>' . $film->Released . '</td></tr>'
                 . '<tr><th>Genre : </th><td>' . $film->Genre . '</td></tr>'
                 . '<tr><th>Réalisateur : </th><td>' . $film->Director . '</td></tr>'
                 . '<tr><th>Acteurs : </th><td>' . $film->Actors . '</td></tr>'
                 . '<tr><th>Notes moyennes : </th><td>' . $film->imdbRating . '</td></tr>'
+                . '<tr><td>Utilisateurs voulant voir ce film : ' . $nbDansListes[0]["nbFilmsAvoir"] .'</td><td>Utilisateurs ayant vu ce film : ' . $nbDansListes[0]["nbFilmsVu"] .'</td></tr>'
                 . '<tr><td><button' . $aVoir . ' type="submit" name="typeListe" value="aVoir" class="btn btn-warning btn-sm">A voir</button></td>'
                 . '<td><button' . $vu .' type="submit" name="typeListe" value="vu" class="btn btn-success btn-sm">Vu</button></td></tr>'
                 . '<tr><th  colspan="3">Synopsis : </th></tr><tr><td colspan="3">' . $film->Plot . '</td></tr></table>'
@@ -113,6 +114,23 @@ function AfficherFilm($film,$listeDejaActive)
         echo '<h1 >Aucun résultat.</h1>';
     }
     
+}
+
+function AfficherCommentaires($commentaires)
+{
+    if (!(is_null($commentaires)))
+    {
+        echo '<div class="form-group" ><textarea class="form-control" placeholder="Ajoutez un commentaire" rows="3" ></textarea>'
+        . '<input type="submit" class="btn btn-primary mt-3" name="commenter" value="Envoyer">'
+        . '<h1 class="display-4">Commentaires</h1>';
+        
+        foreach ($commentaires as $key => $value)
+        {
+            echo '<div class="card"><div class="card-block"><h4 class="card-title" >' . $value["pseudo"] . '</h4>'
+            . '<p class="card-text" >' . $value["commentaire"] . '</p>';
+        }
+        
+    }
 }
 
 function AfficherListe($liste, $proprietaire, $type,$utilisateur)

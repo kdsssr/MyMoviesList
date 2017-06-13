@@ -64,7 +64,7 @@ function getCommentaire($idFilm)
 {
     $connexion = getConnexion();
     
-    $requete = $connexion->prepare("select * FROM avis WHERE imdbID = :id");
+    $requete = $connexion->prepare("select commentaire,pseudo FROM avis natural join utilisateurs WHERE imdbID = :id");
     
     $requete->bindParam(":id", $idFilm, PDO::PARAM_STR);
     
