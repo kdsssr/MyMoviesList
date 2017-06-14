@@ -22,7 +22,7 @@ if (!isset($mvc))
         <title>MyMoviesList</title>
     </head>
     <body>
-        <?php AfficherNav($_SESSION["log"],$_SESSION["pseudo"]); AfficherNotif($etat);?>
+        <?php AfficherNav($_SESSION["log"]); AfficherNotif($etat);?>
         <div class="container" align="center">
             <?php AfficherListe($listeFilms, $perso, $typeListe,$nom); ?>
         </div>

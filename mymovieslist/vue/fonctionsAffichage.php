@@ -8,7 +8,7 @@
  * Affiche le nav si c'est un utilisateur connecté ou non
  * @param bool $etatUtilisateur Vrai si l'utilisateur est connecté, faux si non
  */
-function AfficherNav($etatUtilisateur)
+function AfficherNav($etatUtilisateur,$rechercheEffectue  = "")
 {
     ?>
     
@@ -43,7 +43,7 @@ function AfficherNav($etatUtilisateur)
                         <option value="profil">Profil</option>
                 </select>
                 <div class="input-group">
-                    <input class="form-control" type="text"  name="rechercheTitre" placeholder="Rechercher">
+                    <input class="form-control" type="text"  name="rechercheTitre" placeholder="Rechercher" value="<?php echo $rechercheEffectue ?>">
                     <span class="input-group-btn">
                         <button class="btn btn-outline-secondary mr-sm-4" type="submit"><img src="vue/img/loupe.png" style="width: 20px"></button>
                     </span>
@@ -76,7 +76,7 @@ function AfficherNav($etatUtilisateur)
  */
 function AfficherFilm($film,$listeDejaActive)
 {
-    if ($film->Response == "True")
+    if (!(is_null($film)) && $film->Response == "True")
     {
         if ($listeDejaActive == "vu")
         {
@@ -111,7 +111,7 @@ function AfficherFilm($film,$listeDejaActive)
     }
     else
     {
-        echo '<h1 >Aucun résultat.</h1>';
+        echo '<h1 class="display-4">Aucun résultat.</h1>';
     }
     
 }

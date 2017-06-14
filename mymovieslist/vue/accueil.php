@@ -23,7 +23,7 @@ if (!isset($mvc))
         <title>MyMoviesList</title>
     </head>
     <body>
-        <?php AfficherNav($_SESSION["log"],$_SESSION["pseudo"]); AfficherNotif($etat);?>
+        <?php AfficherNav($_SESSION["log"]); AfficherNotif($etat);?>
         <div class="container" align="center">
             <h1 class="mb-4 display-3">Accueil</h1>
             <h2 class="mb-4">Voici les films que les utilisateurs ont ajouté :</h2>

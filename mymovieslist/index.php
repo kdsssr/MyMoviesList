@@ -13,6 +13,7 @@ require './modele/fonctionsDB.php';
 $etat = "";
 $mvc = true;
 $limite = 10;
+$recherche = "";
 
 if (isset($_SESSION["idUtilisateur"]))
 {
@@ -122,14 +123,14 @@ if (isset($_REQUEST["rechercheTitre"])&& isset($_REQUEST["categorie"]))
 {
     if ($_REQUEST["categorie"] == "film")
     {
-        $infosFilm = RechercheFilmParTitre($_REQUEST["rechercheTitre"]);
+        $infosFilm = RechercheFilmParTitre(filter_var($_REQUEST["rechercheTitre"], FILTER_SANITIZE_STRING));
 
         $typeDejaListe = "pas";
-
-        if ($infosFilm->Response == "True")
+        
+        if (!(is_null($infosFilm)) && $infosFilm->Response == "True")
         {
             $commentairesFilm = GetCommentaire($infosFilm->imdbID);
-            
+
             if ($_SESSION["log"])
             {
                 $infoListe = GetTypeListe($_SESSION["idUtilisateur"], $infosFilm->imdbID);
@@ -139,15 +140,19 @@ if (isset($_REQUEST["rechercheTitre"])&& isset($_REQUEST["categorie"]))
                     $typeDejaListe = $infoListe[0]["typeListe"];
                 }
             }
+            
+            $recherche = filter_var($_REQUEST["rechercheTitre"], FILTER_SANITIZE_STRING);
+            
         }
         else
         {
             $commentairesFilm = null;
         }
-
+        
         include_once './vue/pagefilm.php';
         exit();
     }
+    
 }
 else
 {
@@ -256,6 +261,7 @@ if (isset($_POST["typeListe"]) && $_SESSION["log"])
 }
 else if (!($_SESSION["log"])&& isset($_POST["typeListe"]))
 {
+    $pseudo = "";
     include_once './vue/connexion.php';
     exit();
 }
@@ -315,6 +321,7 @@ if (isset($_POST["filmMaJ"]))
         $typeListe = $typeListeAvant[0]["typeListe"];
         $perso = true;
         $nom = $_SESSION["pseudo"];
+        $etat = "Le film a été déplacé dans la liste vu.";
         include_once './vue/liste.php';
         exit();
     }
@@ -326,6 +333,7 @@ if (isset($_POST["filmMaJ"]))
         $typeListe = $typeListeAvant[0]["typeListe"];
         $perso = true;
         $nom = $_SESSION["pseudo"];
+        $etat = "Le film a été déplacé dans la liste vu.";
         include_once './vue/liste.php';
         exit();
     }
@@ -345,6 +353,7 @@ if (isset($_POST["suppFilm"]))
         $typeListe = $typeListeAvant[0]["typeListe"];
         $perso = true;
         $nom = $_SESSION["pseudo"];
+        $etat = "Le film à été supprimé.";
         include_once './vue/liste.php';
         exit();
     }
@@ -359,10 +368,13 @@ if (isset($_REQUEST["commenter"]) && $_SESSION["log"])
     {
         $commentaire = filter_var($_REQUEST["commentaire"], FILTER_SANITIZE_STRING);
         
-        if ($commentaire != "")
+        if (!(empty($commentaire)))
         {
             AjouterCommentaire($_SESSION["idUtilisateur"], $_POST["filmID"], $commentaire);
-            $_REQUEST = null;
+        }
+        else 
+        {
+            $etat = "Aucun commentaire envoyé ou caractère interdit utilisé.";
         }
         
         $infosFilm = RechercheFilmParTitre($filmCommente->Title);
@@ -391,6 +403,10 @@ if (isset($_REQUEST["commenter"]) && $_SESSION["log"])
         include_once './vue/pagefilm.php';
         exit();
         
+    }
+    else
+    {
+        $etat = "Ce film n'existe pas.";
     }
 }
 // Vérifie si l'u

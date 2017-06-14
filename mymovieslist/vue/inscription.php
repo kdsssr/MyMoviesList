@@ -23,7 +23,7 @@ if (!isset($mvc) && !($_SESSION["log"]))
         <title>MyMoviesList</title>
     </head>
     <body> 
-        <?php AfficherNav($_SESSION["log"],$_SESSION["pseudo"]); AfficherNotif($etat);?>
+        <?php AfficherNav($_SESSION["log"]); AfficherNotif($etat);?>
         <h1 class="text-center display-3 mb-5 " >Créer un compte</h1>
         <div class="form-login container col-4">
             <form action="index.php" method="post" class="form-signin">

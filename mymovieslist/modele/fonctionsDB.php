@@ -21,8 +21,8 @@ function GetConnexion()
     {
         try
         {
-            $conectionString = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . '';
-            $dbb = new PDO($conectionString, DB_USER, DB_PASS);
+            $conexionString = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . '';
+            $dbb = new PDO($conexionString, DB_USER, DB_PASS);
             $dbb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }
         catch (PDOException $e) 
@@ -42,16 +42,16 @@ function GetConnexion()
 function VerifierLogin($login,$mdp) 
 {
     $connexion = GetConnexion();
-    
+
     $requete = $connexion->prepare("select pseudo,idUtilisateur from utilisateurs where pseudo = :pseudo and mdp = :mdp");
-    
+
     $requete->bindParam(":pseudo", $login, PDO::PARAM_STR);
     $requete->bindParam(":mdp", $mdp, PDO::PARAM_STR);
-    
+
     $requete->execute();
-    
+
     $resultat = $requete->fetchAll(PDO::FETCH_ASSOC);
-    
+
     return $resultat;
 }
 
