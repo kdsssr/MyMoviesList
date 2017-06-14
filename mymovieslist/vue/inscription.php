@@ -1,13 +1,14 @@
 <?php
 // Auteur       : De Sousa Kevin
 // Nom          : MyMoviesList
-// Date         : 9 Juin 2017
-// Page d'affichage des listes de films
+// Date         : 14 Juin 2017
+// Page d'insciption
 
-if (!isset($mvc))
+if (!isset($mvc) && !($_SESSION["log"]))
 {
     header("Location: ../index.php");
 }
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -21,10 +22,16 @@ if (!isset($mvc))
         <link rel="stylesheet" href="./vue/css/maCss.css">
         <title>MyMoviesList</title>
     </head>
-    <body>
+    <body> 
         <?php AfficherNav($_SESSION["log"],$_SESSION["pseudo"]); AfficherNotif($etat);?>
-        <div class="container" align="center">
-            <?php AfficherListe($listeFilms, $perso, $typeListe,$nom); ?>
+        <h1 class="text-center display-3 mb-5 mt-5" >Créer un compte</h1>
+        <div class="form-login container col-4">
+            <form action="index.php" method="post" class="form-signin">
+                <input type="text" id="inputName" name="pseudo" class="form-control mb-2" placeholder="Pseudo" required autofocus value="<?php echo $pseudo; ?>">
+                <input type="password" name="mdp" id="inputPassword" class="form-control mb-2" placeholder="Mot de passe" required>
+                <input type="password" name="mdpVerif" id="inputPassword" class="form-control mb-4" placeholder="Confirmation du mot de passe" required>
+                <button class="btn btn-lg btn-primary btn-block btn-signin" type="submit" name="inscrit">S'inscrire</button>
+            </form>
         </div>
     </body>
 </html>

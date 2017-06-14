@@ -23,3 +23,11 @@
 .pas-bord{
     border: none;
 }
+
+.alert
+{
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-radius: 0rem;
+}

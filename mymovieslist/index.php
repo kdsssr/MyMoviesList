@@ -24,15 +24,23 @@ else
     $_SESSION["pseudo"] = "";
 }
 
-// Vérifie si l'utilisateur à cliquer sur le bouton connecter et qu'il ne soit pas connecté et le dirige si c'est le cas
-if (isset($_POST["connecter"]) && !($_SESSION["log"]))
+// Vérifie si l'utilisateur a cliqué sur le bouton connecter et qu'il ne soit pas connecté, si c'est bon il est dirigé vers cette page
+if (isset($_REQUEST["connecter"]) && !($_SESSION["log"]))
 {
     include_once './vue/connexion.php';
     exit();
 }
 
-// Vérifie si l'utilisateur à cliquer sur le bouton déconnecter et qu'il ne soit pas déconnecté et le déconnecte si c'est le cas
-if (isset($_POST["deconnecter"]) && $_SESSION["log"])
+// Vérifie si l'utilisateur a cliqué sur le bouton s'inscrire et qu'il ne soit pas connecté, si c'est bon il est dirigé vers cette page
+if (isset($_REQUEST["inscrire"]) && !($_SESSION["log"]))
+{
+    $pseudo = "";
+    include_once './vue/inscription.php';
+    exit();
+}
+
+// Vérifie si l'utilisateur a cliqué sur le bouton déconnecter et qu'il ne soit pas déconnecté, si c'est bon il est déconnecté
+if (isset($_REQUEST["deconnecter"]) && $_SESSION["log"])
 {
     session_destroy();
     $_SESSION = array();
@@ -40,6 +48,55 @@ if (isset($_POST["deconnecter"]) && $_SESSION["log"])
     $_SESSION["pseudo"] = "";
 }
 
+// Vérifie si l'utilisateur a envoyé le formulaire d'inscription
+if (isset($_REQUEST["inscrit"]))
+{
+    if (isset($_REQUEST["mdp"]) && isset($_REQUEST["mdpVerif"]) && isset($_REQUEST["pseudo"]))
+    {
+        if (!(VerifierNomUtilisateur($_REQUEST["pseudo"])))
+        {
+            if (preg_match('`^([a-zA-Z0-9]{2,20})$`', $_REQUEST["pseudo"]))
+            {
+                if ($_REQUEST["mdp"] == $_REQUEST["mdpVerif"])
+                {
+                    $_SESSION["idUtilisateur"] = AjouterUtilisateur($_REQUEST["pseudo"], sha1($_REQUEST["mdp"]));
+                    $_SESSION["pseudo"] = $_REQUEST["pseudo"];
+                    $_SESSION["log"] = true;
+                }
+                else 
+                {
+                    $pseudo = $_REQUEST["pseudo"];
+                    $etat = "Les mots de passes ne correspondent pas.";
+                    include_once './vue/inscription.php';
+                    exit();
+                }
+            }
+            else 
+            {
+                $etat = "Le pseudo est incorrecte. ( 2 à 20 caractères avec lettres et chiffres uniquement) ";
+                $pseudo = "";
+                include_once './vue/inscription.php';
+                exit();
+            }
+        }
+        else 
+        {
+            $pseudo = "";
+            $etat = "Ce pseudo est déjà utilisé.";
+            include_once './vue/inscription.php';
+            exit();
+        }
+    }
+    else
+    {
+        $pseudo = "";
+        $etat = "Vous avez oublié de remplir certains champs.";
+        include_once './vue/inscription.php';
+        exit();
+    }
+}
+
+// Vérifie si l'utilisateur a envoyé le formulaire de connexion
 if (isset($_REQUEST["logger"]) && isset($_REQUEST["mdp"]))
 {
     $Utilisateur = VerifierLogin($_REQUEST["pseudo"], sha1($_REQUEST["mdp"]));
@@ -52,7 +109,7 @@ if (isset($_REQUEST["logger"]) && isset($_REQUEST["mdp"]))
     } 
 }
 
-// Vérifie si l'utilisateur à taper quelque chose dans la barre de recherche
+// Vérifie si l'utilisateur a tapé quelque chose dans la barre de recherche
 if (isset($_REQUEST["rechercheTitre"])&& isset($_REQUEST["categorie"]))
 {
     if ($_REQUEST["categorie"] == "film")

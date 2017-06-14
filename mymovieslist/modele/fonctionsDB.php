@@ -309,3 +309,37 @@ function CompterFilmDansListe($id)
     
     return $resultat;
 }
+
+/**
+ * Vérifie si un pseudo est déjà prit
+ * @param string $nom
+ * @return {tableau associatif} retourne un tableau de tableau avec le pseudo s'il est déjà prit
+ */
+function VerifierNomUtilisateur($nom)
+{
+    $connexion = GetConnexion();
+    
+    $requete = $connexion->prepare("select pseudo FROM utilisateurs WHERE pseudo = :nom");
+    
+    $requete->bindParam(":nom", $nom, PDO::PARAM_STR);
+    
+    $requete->execute();
+    
+    $resultat = $requete->fetchAll(PDO::FETCH_ASSOC);
+    
+    return $resultat;
+}
+
+function AjouterUtilisateur($nom,$mdp)
+{
+    $connexion = GetConnexion();
+    
+    $requete = $connexion->prepare("INSERT INTO utilisateurs (pseudo,mdp) VALUES (:nom,:mdp)");
+    
+    $requete->bindParam(":nom", $nom, PDO::PARAM_STR);
+    $requete->bindParam(":mdp", $mdp, PDO::PARAM_STR);
+    
+    $requete->execute();
+    
+    return ($connexion->lastInsertId());
+}
