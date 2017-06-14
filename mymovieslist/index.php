@@ -27,6 +27,7 @@ else
 // Vérifie si l'utilisateur a cliqué sur le bouton connecter et qu'il ne soit pas connecté, si c'est bon il est dirigé vers cette page
 if (isset($_REQUEST["connecter"]) && !($_SESSION["log"]))
 {
+    $pseudo = "";
     include_once './vue/connexion.php';
     exit();
 }
@@ -107,6 +108,13 @@ if (isset($_REQUEST["logger"]) && isset($_REQUEST["mdp"]))
         $_SESSION["pseudo"] = $Utilisateur[0]["pseudo"];
         $_SESSION["log"] = true;
     } 
+    else
+    {
+        $pseudo = $_REQUEST["pseudo"];
+        $etat = "Pseudo ou mot de passe incorrecte.";
+        include_once './vue/connexion.php';
+        exit();
+    }
 }
 
 // Vérifie si l'utilisateur a tapé quelque chose dans la barre de recherche

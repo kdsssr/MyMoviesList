@@ -12,7 +12,7 @@ function AfficherNav($etatUtilisateur)
 {
     ?>
     
-    <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse">
+    <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top">
         <button class="navbar-toggler navbar-toggler-right collapsed" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
         </button>
@@ -96,7 +96,7 @@ function AfficherFilm($film,$listeDejaActive)
         
         $nbDansListes = CompterFilmDansListe($film->imdbID);
         
-        echo '<table class="table table-striped" ><tr><th colspan="3" class="display-4 text-center" >' . $film->Title . '</th></tr>'
+        echo '<table class="table table-striped titre" ><tr><th colspan="3" class="display-4 text-center" >' . $film->Title . '</th></tr>'
                 . '<tr><td rowspan="7"><img class="mx-auto d-block" src="' . $film->Poster . '" alt="Poster" style="width: 240px;"></td>'
                 . '<th>Date de sortie : </th><td>' . $film->Released . '</td></tr>'
                 . '<tr><th>Genre : </th><td>' . $film->Genre . '</td></tr>'
@@ -163,7 +163,7 @@ function AfficherListe($liste, $proprietaire, $type,$utilisateur)
  */
 function AfficherListePerso($laListe,$type)
 {
-    echo '<h1 class="mb-5 mt-5 display-4">Voici votre liste de film ' . $type . '</h1>';
+    echo '<h1 class="mb-5 display-4">Voici votre liste de film ' . $type . '</h1>';
     echo '<table class="table table-striped table-inverse"><tr><th>Nom</th><th>Changer de liste</th><th>Supprimer de la liste</th></tr>'
     . '<form action="index.php" method="post">';
     
@@ -180,7 +180,7 @@ function AfficherListePerso($laListe,$type)
 
 function AfficherListeAutre($laListe,$type,$nomUtilisateur)
 {
-    echo '<h1 class="mb-5 mt-5 display-4">Voici la liste de film ' . $type . ' de <a href="">' . $nomUtilisateur .'</a></h1>';
+    echo '<h1 class="mb-5 display-4">Voici la liste de film ' . $type . ' de <a href="">' . $nomUtilisateur .'</a></h1>';
     echo '<table class="table table-striped table-inverse"><tr><th>Nom</th></tr>';
     
     foreach ($laListe as $key => $value)

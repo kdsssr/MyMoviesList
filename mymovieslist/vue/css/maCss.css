@@ -30,4 +30,10 @@
     border-left: none;
     border-right: none;
     border-radius: 0rem;
+    margin-top: 4rem!important;
+}
+
+h1, .titre
+{
+    margin-top: 4rem!important;
 }

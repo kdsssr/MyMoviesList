@@ -24,10 +24,10 @@ if (!isset($mvc) && !($_SESSION["log"]))
     </head>
     <body> 
         <?php AfficherNav($_SESSION["log"],$_SESSION["pseudo"]); AfficherNotif($etat);?>
-        <h1 class="text-center display-3 mb-5 mt-5" >Connectez-vous</h1>
+        <h1 class="text-center display-3 mb-5 " >Connectez-vous</h1>
         <div class="form-login container col-4">
             <form action="index.php" method="post" class="form-signin">
-                <input type="text" id="inputName" name="pseudo" class="form-control mb-2" placeholder="Pseudo" required autofocus>
+                <input type="text" id="inputName" name="pseudo" class="form-control mb-2" placeholder="Pseudo" required autofocus value="<?php echo $pseudo; ?>">
                 <input type="password" name="mdp" id="inputPassword" class="form-control mb-4" placeholder="Mot de passe" required>
                 <button class="btn btn-lg btn-primary btn-block btn-signin" type="submit" name="logger">Se connecter</button>
             </form>
