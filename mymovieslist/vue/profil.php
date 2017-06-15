@@ -1,13 +1,14 @@
 <?php
 // Auteur       : De Sousa Kevin
 // Nom          : MyMoviesList
-// Date         : 9 Juin 2017
-// Page d'affichage des listes de films
+// Date         : 15 Juin 2017
+// Page de profil
 
-if (!isset($mvc))
+if (!isset($mvc) && !($_SESSION["log"]))
 {
     header("Location: ../index.php");
 }
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -21,10 +22,10 @@ if (!isset($mvc))
         <link rel="stylesheet" href="./vue/css/maCss.css">
         <title>MyMoviesList</title>
     </head>
-    <body>
-        <?php AfficherNav($_SESSION["log"]); AfficherNotif($etat);?>
+    <body> 
+        <?php AfficherNav($_SESSION["log"],$recherche); AfficherNotif($etat);?>
         <div class="container" align="center">
-            <?php AfficherListe($listeFilms, $perso, $typeListe,$_SESSION["utilisateurListe"]); ?>
+            <?php AfficherProfil($_SESSION["utilisateurListe"], $perso); ?>
         </div>
     </body>
 </html>

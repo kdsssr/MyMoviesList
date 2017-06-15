@@ -22,7 +22,6 @@ if (isset($_SESSION["idUtilisateur"]))
 else
 {
     $_SESSION["log"] = false;
-    $_SESSION["pseudo"] = "";
 }
 
 // Vérifie si l'utilisateur a cliqué sur le bouton connecter et qu'il ne soit pas connecté, si c'est bon il est dirigé vers cette page
@@ -47,7 +46,6 @@ if (isset($_REQUEST["deconnecter"]) && $_SESSION["log"])
     session_destroy();
     $_SESSION = array();
     $_SESSION["log"] = false;
-    $_SESSION["pseudo"] = "";
 }
 
 // Vérifie si l'utilisateur a envoyé le formulaire d'inscription
@@ -57,7 +55,7 @@ if (isset($_REQUEST["inscrit"]))
     {
         if (!(VerifierNomUtilisateur($_REQUEST["pseudo"])))
         {
-            if (preg_match('`^([a-zA-Z0-9]{2,20})$`', $_REQUEST["pseudo"]))
+            if (preg_match('`^([a-zA-Z0-9]{2,20})$`', $_REQUEST["pseudo"]) && !(empty($_REQUEST["mdp"])))
             {
                 if ($_REQUEST["mdp"] == $_REQUEST["mdpVerif"])
                 {
@@ -75,7 +73,7 @@ if (isset($_REQUEST["inscrit"]))
             }
             else 
             {
-                $etat = "Le pseudo est incorrecte. ( 2 à 20 caractères avec lettres et chiffres uniquement) ";
+                $etat = "Le pseudo est incorrecte ( 2 à 20 caractères avec lettres et chiffres uniquement) ou mot de passe vide.";
                 $pseudo = "";
                 include_once './vue/inscription.php';
                 exit();
@@ -118,12 +116,49 @@ if (isset($_REQUEST["logger"]) && isset($_REQUEST["mdp"]))
     }
 }
 
+if (isset($_GET["profil"]))
+{
+    if ($_SESSION["log"] && $_GET["profil"] == "p")
+    {
+        $_SESSION["utilisateurListe"] = $_SESSION["idUtilisateur"];
+        $perso = 0;
+        include_once './vue/profil.php';
+        exit();
+    }
+    else
+    {
+        $infosUtilisateur = VerifierNomUtilisateur(filter_var($_GET["profil"], FILTER_SANITIZE_STRING));
+        
+        if ($infosUtilisateur)
+        {
+            $_SESSION["utilisateurListe"] = $infosUtilisateur[0]["idUtilisateur"];
+            $pseudo = $infosUtilisateur[0]["pseudo"];
+            if ($_SESSION["log"] && $_SESSION["utilisateurListe"] == $_SESSION["idUtilisateur"])
+            {
+                $perso = 0;
+            }
+            else
+            {
+                $perso = 1;
+            }
+            
+        }
+        else 
+        {
+            $perso = 2;
+        }
+        
+        include_once './vue/profil.php';
+        exit();
+    }
+}
+
 // Vérifie si l'utilisateur a tapé quelque chose dans la barre de recherche
-if (isset($_REQUEST["rechercheTitre"])&& isset($_REQUEST["categorie"]))
+if (isset($_REQUEST["recherche"])&& isset($_REQUEST["categorie"]))
 {
     if ($_REQUEST["categorie"] == "film")
     {
-        $infosFilm = RechercheFilmParTitre(filter_var($_REQUEST["rechercheTitre"], FILTER_SANITIZE_STRING));
+        $infosFilm = RechercheFilmParTitre(filter_var($_REQUEST["recherche"], FILTER_SANITIZE_STRING));
 
         $typeDejaListe = "pas";
         
@@ -140,17 +175,45 @@ if (isset($_REQUEST["rechercheTitre"])&& isset($_REQUEST["categorie"]))
                     $typeDejaListe = $infoListe[0]["typeListe"];
                 }
             }
-            
-            $recherche = filter_var($_REQUEST["rechercheTitre"], FILTER_SANITIZE_STRING);
-            
         }
         else
         {
             $commentairesFilm = null;
         }
         
+        
+        $recherche = filter_var($_REQUEST["recherche"], FILTER_SANITIZE_STRING);
         include_once './vue/pagefilm.php';
         exit();
+    }
+    else if ($_REQUEST["categorie"] == "profil")
+    {
+        $infosUtilisateur = VerifierNomUtilisateur(filter_var($_REQUEST["recherche"], FILTER_SANITIZE_STRING));
+        
+        if ($infosUtilisateur)
+        {
+            
+            $_SESSION["utilisateurListe"] = $infosUtilisateur[0]["idUtilisateur"];
+            $pseudo = $infosUtilisateur[0]["pseudo"];
+            if ($_SESSION["log"] && $_SESSION["utilisateurListe"] == $_SESSION["idUtilisateur"])
+            {
+                $perso = 0;
+            }
+            else
+            {
+                $perso = 1;
+            }
+            
+        }
+        else 
+        {
+            $perso = 2;
+        }
+        
+        $recherche = filter_var($_REQUEST["recherche"], FILTER_SANITIZE_STRING); 
+        include_once './vue/profil.php';
+        exit();
+        
     }
     
 }
@@ -273,8 +336,8 @@ if (isset($_GET["type"])  && $_SESSION["log"])
     {
         $listeFilms = GetFilmListe($_SESSION["idUtilisateur"], $_GET["type"]);
         $typeListe = $_GET["type"];
+        $_SESSION["utilisateurListe"] = $_SESSION["idUtilisateur"];
         $perso = true;
-        $nom = $_SESSION["pseudo"];
         include_once './vue/liste.php';
         exit();
     }
@@ -282,12 +345,12 @@ if (isset($_GET["type"])  && $_SESSION["log"])
 
 if (isset($_POST["type"])&& $_SESSION["log"])
 {
-    $listeFilms = GetFilmListe($_POST["utilisateurListe"], $_POST["type"]);
+    $listeFilms = GetFilmListe($_SESSION["utilisateurListe"], $_POST["type"]);
     $typeListe = $_POST["type"];
     
     if (isset($_SESSION["idUtilisateur"]))
     {
-        if ($_SESSION["idUtilisateur"] == $_POST["utilisateurListe"])
+        if ($_SESSION["idUtilisateur"] == $_SESSION["utilisateurListe"])
         {
             $perso = true;
             $nom = $_SESSION["pseudo"];
@@ -295,7 +358,7 @@ if (isset($_POST["type"])&& $_SESSION["log"])
         else
         {
             $perso = false;
-            $nom = GetNomUtilisateur($_POST["utilisateurListe"])[0]["pseudo"];
+            $nom = GetNomUtilisateur($_SESSION["utilisateurListe"])[0]["pseudo"];
         }
     }
     else
@@ -322,6 +385,7 @@ if (isset($_POST["filmMaJ"]))
         $perso = true;
         $nom = $_SESSION["pseudo"];
         $etat = "Le film a été déplacé dans la liste vu.";
+        $_SESSION["utilisateurListe"] = $_SESSION["idUtilisateur"];
         include_once './vue/liste.php';
         exit();
     }
@@ -334,6 +398,7 @@ if (isset($_POST["filmMaJ"]))
         $perso = true;
         $nom = $_SESSION["pseudo"];
         $etat = "Le film a été déplacé dans la liste vu.";
+        $_SESSION["utilisateurListe"] = $_SESSION["idUtilisateur"];
         include_once './vue/liste.php';
         exit();
     }
@@ -354,6 +419,7 @@ if (isset($_POST["suppFilm"]))
         $perso = true;
         $nom = $_SESSION["pseudo"];
         $etat = "Le film à été supprimé.";
+        $_SESSION["utilisateurListe"] = $_SESSION["idUtilisateur"];
         include_once './vue/liste.php';
         exit();
     }
@@ -409,7 +475,7 @@ if (isset($_REQUEST["commenter"]) && $_SESSION["log"])
         $etat = "Ce film n'existe pas.";
     }
 }
-// Vérifie si l'u
+// Vérifie si l'utilisateur à changer de page
 if (isset($_GET["page"]))
 {
     $page = $_GET["page"];

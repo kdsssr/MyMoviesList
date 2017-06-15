@@ -299,7 +299,7 @@ function CompterFilmDansListe($id)
     $connexion = GetConnexion();
     
     $requete = $connexion->prepare('SELECT (select count(typeListe) FROM listes WHERE typeListe = "aVoir" and imdbID = :id) as nbFilmsAvoir,'
-            . '(select count(typeListe)as filmsVu FROM listes WHERE typeListe = "vu" and imdbID = :id) as nbFilmsVu');
+            . '(select count(typeListe)FROM listes WHERE typeListe = "vu" and imdbID = :id) as nbFilmsVu');
     
     $requete->bindParam(":id", $id, PDO::PARAM_STR);
     
@@ -319,7 +319,7 @@ function VerifierNomUtilisateur($nom)
 {
     $connexion = GetConnexion();
     
-    $requete = $connexion->prepare("select pseudo FROM utilisateurs WHERE pseudo = :nom");
+    $requete = $connexion->prepare("select pseudo,idUtilisateur FROM utilisateurs WHERE pseudo = :nom");
     
     $requete->bindParam(":nom", $nom, PDO::PARAM_STR);
     
@@ -342,4 +342,20 @@ function AjouterUtilisateur($nom,$mdp)
     $requete->execute();
     
     return ($connexion->lastInsertId());
+}
+
+function CompterFilmsParListe($idUtilisateur)
+{
+    $connexion = GetConnexion();
+    
+    $requete = $connexion->prepare('SELECT (select count(imdbID) FROM listes WHERE idUtilisateur = :id and typeListe = "vu")as nbVu,'
+            . '(select count(imdbID) FROM listes WHERE idUtilisateur = :id and typeListe = "aVoir")as nbAVoir');
+    
+    $requete->bindParam(":id", $idUtilisateur, PDO::PARAM_INT);
+    
+    $requete->execute();
+    
+    $resultat = $requete->fetchAll(PDO::FETCH_ASSOC);
+    
+    return $resultat;
 }

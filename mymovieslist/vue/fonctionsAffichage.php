@@ -20,7 +20,7 @@ function AfficherNav($etatUtilisateur,$rechercheEffectue  = "")
         <div class="navbar-collapse collapse" id="navbarColor01" aria-expanded="false">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php">Accueil <span class="sr-only"></span></a>
+                    <a class="nav-link" href="index.php">Accueil</a>
                 </li>
                 <?php
                 
@@ -33,7 +33,8 @@ function AfficherNav($etatUtilisateur,$rechercheEffectue  = "")
                     <div class="dropdown-menu">
                     <a class="dropdown-item" href="index.php?type=aVoir">A voir</a>
                     <a class="dropdown-item" href="index.php?type=vu">Vu</a>
-                    </div></li>';
+                    </div></li>
+                    <li><a href="index.php?profil=p"><img alt="profil" src="vue/img/profil.png" style="width: 40px;"></a></li>';
                 }
                 ?>
             </ul>
@@ -43,7 +44,7 @@ function AfficherNav($etatUtilisateur,$rechercheEffectue  = "")
                         <option value="profil">Profil</option>
                 </select>
                 <div class="input-group">
-                    <input class="form-control" type="text"  name="rechercheTitre" placeholder="Rechercher" value="<?php echo $rechercheEffectue ?>">
+                    <input class="form-control" type="text"  name="recherche" placeholder="Rechercher" value="<?php echo $rechercheEffectue ?>">
                     <span class="input-group-btn">
                         <button class="btn btn-outline-secondary mr-sm-4" type="submit"><img src="vue/img/loupe.png" style="width: 20px"></button>
                     </span>
@@ -102,7 +103,7 @@ function AfficherFilm($film,$listeDejaActive)
                 . '<tr><th>Genre : </th><td>' . $film->Genre . '</td></tr>'
                 . '<tr><th>Réalisateur : </th><td>' . $film->Director . '</td></tr>'
                 . '<tr><th>Acteurs : </th><td>' . $film->Actors . '</td></tr>'
-                . '<tr><th>Notes moyennes : </th><td>' . $film->imdbRating . '</td></tr>'
+                . '<tr><th>Notes moyennes : </th><td>' . $film->imdbRating . ' / 10</td></tr>'
                 . '<tr><td>Utilisateurs voulant voir ce film : ' . $nbDansListes[0]["nbFilmsAvoir"] .'</td><td>Utilisateurs ayant vu ce film : ' . $nbDansListes[0]["nbFilmsVu"] .'</td></tr>'
                 . '<tr><td><button' . $aVoir . ' type="submit" name="typeListe" value="aVoir" class="btn btn-warning btn-sm">A voir</button></td>'
                 . '<td><button' . $vu .' type="submit" name="typeListe" value="vu" class="btn btn-success btn-sm">Vu</button></td></tr>'
@@ -111,7 +112,7 @@ function AfficherFilm($film,$listeDejaActive)
     }
     else
     {
-        echo '<h1 class="display-4">Aucun résultat.</h1>';
+        AfficherAucunRsultat();
     }
     
 }
@@ -130,7 +131,7 @@ function AfficherCommentaires($commentaires)
         
         foreach ($commentaires as $key => $value)
         {
-            echo '<div class="card"><div class="card-block"><h4 class="card-title" >' . $value["pseudo"] . '</h4>'
+            echo '<div class="card"><div class="card-block"><h4 class="card-title" ><a href="index.php?profil=' . $value["pseudo"] . '">' . $value["pseudo"] . '</a></h4>'
             . '<p class="card-text" >' . $value["commentaire"] . '</p></div>';
         }
         
@@ -144,7 +145,7 @@ function AfficherCommentaires($commentaires)
  * @param type $type
  * @param type $utilisateur
  */
-function AfficherListe($liste, $proprietaire, $type,$utilisateur)
+function AfficherListe($liste, $proprietaire, $type,$id)
 {
     if ($proprietaire)
     {
@@ -152,7 +153,8 @@ function AfficherListe($liste, $proprietaire, $type,$utilisateur)
     }
     else
     {
-      AfficherListeAutre($liste, $type,$utilisateur);  
+      $utilisateur = GetNomUtilisateur($id);
+      AfficherListeAutre($liste, $type,$utilisateur[0]["pseudo"]);  
     }
 }
 
@@ -180,7 +182,7 @@ function AfficherListePerso($laListe,$type)
 
 function AfficherListeAutre($laListe,$type,$nomUtilisateur)
 {
-    echo '<h1 class="mb-5 display-4">Voici la liste de film ' . $type . ' de <a href="">' . $nomUtilisateur .'</a></h1>';
+    echo '<h1 class="mb-5 display-4">Voici la liste de film ' . $type . ' de <a href="index.php?profil=' . $nomUtilisateur .'">' . $nomUtilisateur .'</a></h1>';
     echo '<table class="table table-striped table-inverse"><tr><th>Nom</th></tr>';
     
     foreach ($laListe as $key => $value)
@@ -241,6 +243,10 @@ function AfficherBtnPages($limite,$pActuelle)
     
 }
 
+/**
+ * Affiche les erreurs ou la confiramtion d'une action de l'utilisateur.
+ * @param string $notif Le texte à afficher
+ */
 function AfficherNotif($notif)
 {
     if ($notif != "")
@@ -250,4 +256,49 @@ function AfficherNotif($notif)
                   <span aria-hidden="true">&times;</span>
                 </button>' . $notif . '</div>';
     }
+}
+
+function AfficherProfil($id, $proprietaire)
+{
+    $nbListes = CompterFilmsParListe($id);
+    $nom = GetNomUtilisateur($id);
+    
+    if ($proprietaire == 0)
+    {
+      AfficherSonProfil($nbListes[0]["nbVu"], $nbListes[0]["nbAVoir"]);
+    }
+    else if ($proprietaire == 1)
+    {
+      AfficherProfilRecherche($nbListes[0]["nbVu"], $nbListes[0]["nbAVoir"],$nom[0]["pseudo"]);  
+    }
+    else
+    {
+        AfficherAucunRsultat();
+    }
+}
+
+function AfficherSonProfil($nbVu,$nbAvoir)
+{
+    echo '<h1 class="mb-4 display-3" >Votre profil</h1>'
+            . '<form method="post" action="index.php" ><table>'
+            . '<tr><td>Nombre de films vus : ' . $nbVu . '</td>'
+            . '<td><button class="btn btn-info btn-sm" type="submit" name="type" value="vu">Films vu</button></td></tr>'
+            . '<tr><td>Nombre de films à voir : ' . $nbAvoir . '</td>'
+            . '<td><button class="btn btn-info btn-sm" type="submit" name="type" value="aVoir">Films à voir</button></td></tr></table>';
+}
+
+function AfficherProfilRecherche($nbVu,$nbAvoir,$nom)
+{
+    echo '<h1 class="mb-4 display-3" >Profil de ' . $nom . '</h1>'
+            . '<form method="post" action="index.php" ><table>'
+            . '<tr><td>Nombre de films vus : ' . $nbVu . '</td>'
+            . '<td><button class="btn btn-info btn-sm" type="submit" name="type" value="vu">Films vu</button></td></tr>'
+            . '<tr><td>Nombre de films à voir : ' . $nbAvoir . '</td>'
+            . '<td><button class="btn btn-info btn-sm" type="submit" name="type" value="aVoir">Films à voir</button></td></tr></table>';
+    
+}
+
+function AfficherAucunRsultat()
+{
+    echo '<h1 class="display-4">Aucun résultat.</h1>';
 }
