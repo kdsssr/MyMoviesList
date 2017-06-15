@@ -280,7 +280,7 @@ function AfficherProfil($id, $proprietaire)
 function AfficherSonProfil($nbVu,$nbAvoir)
 {
     echo '<h1 class="mb-4 display-3" >Votre profil</h1>'
-            . '<form method="post" action="index.php" ><table>'
+            . '<form method="post" action="index.php" ><table class="table">'
             . '<tr><td>Nombre de films vus : ' . $nbVu . '</td>'
             . '<td><button class="btn btn-info btn-sm" type="submit" name="type" value="vu">Films vu</button></td></tr>'
             . '<tr><td>Nombre de films à voir : ' . $nbAvoir . '</td>'
@@ -290,7 +290,7 @@ function AfficherSonProfil($nbVu,$nbAvoir)
 function AfficherProfilRecherche($nbVu,$nbAvoir,$nom)
 {
     echo '<h1 class="mb-4 display-3" >Profil de ' . $nom . '</h1>'
-            . '<form method="post" action="index.php" ><table>'
+            . '<form method="post" action="index.php" ><table class="table">'
             . '<tr><td>Nombre de films vus : ' . $nbVu . '</td>'
             . '<td><button class="btn btn-info btn-sm" type="submit" name="type" value="vu">Films vu</button></td></tr>'
             . '<tr><td>Nombre de films à voir : ' . $nbAvoir . '</td>'
