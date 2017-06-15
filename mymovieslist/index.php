@@ -384,7 +384,7 @@ if (isset($_POST["filmMaJ"]))
         $typeListe = $typeListeAvant[0]["typeListe"];
         $perso = true;
         $nom = $_SESSION["pseudo"];
-        $etat = "Le film a été déplacé dans la liste vu.";
+        $etat = "Le film a été déplacé dans la liste à voir.";
         $_SESSION["utilisateurListe"] = $_SESSION["idUtilisateur"];
         include_once './vue/liste.php';
         exit();
