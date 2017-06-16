@@ -1,7 +1,7 @@
 <?php
 // Auteur       : De Sousa Kevin
 // Nom          : MyMoviesList
-// Date         : 9 Juin 2017
+// Date         : 15 Juin 2017
 // Page d'affichage des listes de films
 
 if (!isset($mvc))

@@ -1,7 +1,7 @@
 <?php
 // Auteur       : De Sousa Kevin
 // Nom          : MyMoviesList
-// Date         : 6 Juin 2017
+// Date         : 16 Juin 2017
 // Contrôleur
 
 session_start();
@@ -325,6 +325,7 @@ if (isset($_POST["typeListe"]) && $_SESSION["log"])
 else if (!($_SESSION["log"])&& isset($_POST["typeListe"]))
 {
     $pseudo = "";
+    $etat = "Vous devez vous connecter pour pouvoir ajouter un film dans une liste.";
     include_once './vue/connexion.php';
     exit();
 }
@@ -343,12 +344,12 @@ if (isset($_GET["type"])  && $_SESSION["log"])
     }
 }
 
-if (isset($_POST["type"])&& $_SESSION["log"])
+if (isset($_POST["type"]))
 {
     $listeFilms = GetFilmListe($_SESSION["utilisateurListe"], $_POST["type"]);
     $typeListe = $_POST["type"];
     
-    if (isset($_SESSION["idUtilisateur"]))
+    if ($_SESSION["log"])
     {
         if ($_SESSION["idUtilisateur"] == $_SESSION["utilisateurListe"])
         {
@@ -364,7 +365,7 @@ if (isset($_POST["type"])&& $_SESSION["log"])
     else
     {
         $perso = false;
-        $nom = GetNomUtilisateur($_POST["utilisateurListe"])[0]["pseudo"];
+        $nom = GetNomUtilisateur($_SESSION["utilisateurListe"])[0]["pseudo"];
     }
     
     include_once './vue/liste.php';
@@ -426,48 +427,58 @@ if (isset($_POST["suppFilm"]))
 }
 
 // Vérifie si l'utilisateur veut commenter un film
-if (isset($_REQUEST["commenter"]) && $_SESSION["log"])
+if (isset($_REQUEST["commenter"]))
 {
     $filmCommente = RechercheFilmParId($_POST["filmID"]);
     
     if ($filmCommente->Response == "True")
     {
-        $commentaire = filter_var($_REQUEST["commentaire"], FILTER_SANITIZE_STRING);
+        if ($_SESSION["log"])
+        {
+            $commentaire = filter_var($_REQUEST["commentaire"], FILTER_SANITIZE_STRING);
         
-        if (!(empty($commentaire)))
-        {
-            AjouterCommentaire($_SESSION["idUtilisateur"], $_POST["filmID"], $commentaire);
-        }
-        else 
-        {
-            $etat = "Aucun commentaire envoyé ou caractère interdit utilisé.";
-        }
-        
-        $infosFilm = RechercheFilmParTitre($filmCommente->Title);
-    
-        $typeDejaListe = "pas";
-
-        if ($infosFilm->Response == "True")
-        {
-            $commentairesFilm = GetCommentaire($infosFilm->imdbID);
-
-            if ($_SESSION["log"])
+            if (!(empty($commentaire)))
             {
-                $infoListe = GetTypeListe($_SESSION["idUtilisateur"], $infosFilm->imdbID);
+                AjouterCommentaire($_SESSION["idUtilisateur"], $_POST["filmID"], $commentaire);
+            }
+            else 
+            {
+                $etat = "Aucun commentaire envoyé ou caractère interdit utilisé.";
+            }
 
-                if ($infoListe)
+            $infosFilm = RechercheFilmParTitre($filmCommente->Title);
+
+            $typeDejaListe = "pas";
+
+            if ($infosFilm->Response == "True")
+            {
+                $commentairesFilm = GetCommentaire($infosFilm->imdbID);
+
+                if ($_SESSION["log"])
                 {
-                    $typeDejaListe = $infoListe[0]["typeListe"];
+                    $infoListe = GetTypeListe($_SESSION["idUtilisateur"], $infosFilm->imdbID);
+
+                    if ($infoListe)
+                    {
+                        $typeDejaListe = $infoListe[0]["typeListe"];
+                    }
                 }
             }
+            else
+            {
+                $commentairesFilm = null;
+            }
+
+            include_once './vue/pagefilm.php';
+            exit();
         }
         else
         {
-            $commentairesFilm = null;
+            $etat = "Vous devez vous connecter pour commenter.";
+            $pseudo = "";
+            include_once './vue/connexion.php';
+            exit();
         }
-
-        include_once './vue/pagefilm.php';
-        exit();
         
     }
     else

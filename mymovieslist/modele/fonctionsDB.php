@@ -1,7 +1,7 @@
 <?php
 // Auteur       : De Sousa Kevin
 // Nom          : MyMoviesList
-// Date         : 6 Juin 2017
+// Date         : 15 Juin 2017
 // Fonctions lié à la base de donnée
 
 DEFINE('DB_HOST', "127.0.0.1");

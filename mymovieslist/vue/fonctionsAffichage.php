@@ -1,7 +1,7 @@
 <?php
 // Auteur       : De Sousa Kevin
 // Nom          : MyMoviesList
-// Date         : 7 Juin 2017
+// Date         : 15 Juin 2017
 // Fonctions d'affichage
 
 /**
