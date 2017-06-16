@@ -64,7 +64,7 @@ function GetCommentaire($idFilm)
 {
     $connexion = GetConnexion();
     
-    $requete = $connexion->prepare("select commentaire,pseudo FROM avis natural join utilisateurs WHERE imdbID = :id");
+    $requete = $connexion->prepare("select commentaire,pseudo FROM avis natural join utilisateurs WHERE imdbID = :id ORDER BY idAvis desc");
     
     $requete->bindParam(":id", $idFilm, PDO::PARAM_STR);
     
@@ -273,7 +273,7 @@ function GetFilm($page,$limite,$tri,$ordre)
 }
 
 /**
- * Compte le nombre de fois en tout dans toutes les listes
+ * Compte le nombre de films différents dans toutes les listes 
  * @return {tableau associatif} retourne un tableau de tableau avec le nombre de films
  */
 function CompterFilms()
