@@ -24,7 +24,7 @@ function AfficherNav($etatUtilisateur,$rechercheEffectue  = "")
                     <a class="nav-link" href="index.php">Accueil</a>
                 </li>
                 <?php
-                
+                // Affiche le menu mes listes seulement si l'utilisateur est connecté
                 if ($etatUtilisateur) 
                 {
                     echo '<li class="nav-item dropdown">
@@ -54,10 +54,12 @@ function AfficherNav($etatUtilisateur,$rechercheEffectue  = "")
             <form action="index.php" method="post">
                 <div class="btn-group" role="group">
                     <?php 
+                    // Affiche le bouton se déconnecter si l'utilisateur est connecté 
                     if ($etatUtilisateur)
                     {
                         echo '<button class="btn  btn-outline-danger my-2 my-sm-0" type="submit" name="deconnecter">Déconnecter</button>';
                     }
+                    // Affiche les boutons se connecter et s'inscrire si l'utilisateur est déconnecté
                     else
                     {
                         echo '<button class="btn  btn-outline-primary my-2 my-sm-0" type="submit" name="inscrire">S\'inscrire</button>';
@@ -81,6 +83,7 @@ function AfficherFilm($film,$listeDejaActive)
 {
     if (!(is_null($film)) && $film->Response == "True")
     {
+        // Décide de quel un bouton serra désactivé parce que le film se trouve déjà dans une liste
         if ($listeDejaActive == "vu")
         {
             $vu = " disabled";
@@ -230,12 +233,14 @@ function AfficherBtnPages($limite,$pActuelle)
 {
     $nbFilms = CompterFilms();
     
+    // Arrondi au supérieur le nombre de films dans des listes divisé par le nombre de films max par page ce qui donne le nombre de pages
     $nbPage = ceil($nbFilms[0]["nbFilms"] /$limite);
     
     echo '<ul class="pagination justify-content-center">';
     
     for ($i = 1; $i <= $nbPage; $i++)
     {
+        // Met le bouton de la page actuelle en actif
         if ($i == $pActuelle)
         {
             echo '<li class="page-item active"><a class="page-link" href="index.php?page=' . $i .'">' . $i .'</a></li>';

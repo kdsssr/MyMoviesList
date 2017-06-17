@@ -10,10 +10,10 @@ require './vue/fonctionsAffichage.php';
 require './modele/fonctionsAPI.php';
 require './modele/fonctionsDB.php';
 
-$etat = "";
-$mvc = true;
-$limite = 10;
-$recherche = "";
+$etat = "";         // Notifications
+$mvc = true;        // Variable qui indique qu'on passe par le contrôleur
+$limite = 8;       // Limite de films par page à l'accueil
+$recherche = "";    // La dernière recherche effectué
 
 if (isset($_SESSION["idUtilisateur"]))
 {
@@ -53,10 +53,13 @@ if (isset($_REQUEST["inscrit"]))
 {
     if (isset($_REQUEST["mdp"]) && isset($_REQUEST["mdpVerif"]) && isset($_REQUEST["pseudo"]))
     {
+        // J'utilise la fonction VerifierNomUtilisateur pour voir si l'utilisateur a choisit un pseudo déjà utilisé
         if (!(VerifierNomUtilisateur($_REQUEST["pseudo"])))
         {
+            // Le pseudo ne doit être composé que de lettres ou de chiffres
             if (preg_match('`^([a-zA-Z0-9]{2,20})$`', $_REQUEST["pseudo"]) && !(empty($_REQUEST["mdp"])))
             {
+                // Vérifie si l'utilisateur a bien confirmé le mot de passe
                 if ($_REQUEST["mdp"] == $_REQUEST["mdpVerif"])
                 {
                     $_SESSION["idUtilisateur"] = AjouterUtilisateur($_REQUEST["pseudo"], sha1($_REQUEST["mdp"]));
@@ -128,6 +131,7 @@ if (isset($_GET["profil"]))
     }
     else
     {
+        // Filtre la recherche qu'a recherché l'utilisateur pour éviter des erreurs
         $infosUtilisateur = VerifierNomUtilisateur(filter_var($_GET["profil"], FILTER_SANITIZE_STRING));
         
         if ($infosUtilisateur)
@@ -159,6 +163,7 @@ if (isset($_REQUEST["recherche"])&& isset($_REQUEST["categorie"]))
 {
     if ($_REQUEST["categorie"] == "film")
     {
+        // Filtre la recherche qu'a recherché l'utilisateur pour éviter des erreurs
         $infosFilm = RechercheFilmParTitre(filter_var($_REQUEST["recherche"], FILTER_SANITIZE_STRING));
 
         $typeDejaListe = "pas";
@@ -182,13 +187,14 @@ if (isset($_REQUEST["recherche"])&& isset($_REQUEST["categorie"]))
             $commentairesFilm = null;
         }
         
-        
+        // Filtre la recherche qu'a recherché l'utilisateur pour éviter des erreurs
         $recherche = filter_var($_REQUEST["recherche"], FILTER_SANITIZE_STRING);
         include_once './vue/pagefilm.php';
         exit();
     }
     else if ($_REQUEST["categorie"] == "profil")
     {
+        // Filtre la recherche qu'a recherché l'utilisateur pour éviter des erreurs
         $infosUtilisateur = VerifierNomUtilisateur(filter_var($_REQUEST["recherche"], FILTER_SANITIZE_STRING));
         
         if ($infosUtilisateur)
@@ -211,12 +217,11 @@ if (isset($_REQUEST["recherche"])&& isset($_REQUEST["categorie"]))
             $perso = 2;
         }
         
+        // Filtre la recherche qu'a recherché l'utilisateur pour éviter des erreurs
         $recherche = filter_var($_REQUEST["recherche"], FILTER_SANITIZE_STRING); 
         include_once './vue/profil.php';
         exit();
-        
     }
-    
 }
 else
 {
@@ -508,15 +513,19 @@ if (isset($_GET["tri"]))
 {
     switch ($_GET["tri"])
     {
+        // ac -> alphabétique croissant
         case "ac":
             $_SESSION["tri"] = "ac";
             break;
+        // anc -> alphabétique non croissant
         case "anc":
             $_SESSION["tri"] = "anc";
             break;
+        // nac -> nombre d'apparition croissant
         case "nac":
             $_SESSION["tri"] = "nac";
             break;
+        // nanc -> nombre d'apparition non croissant
         case "nanc":
             $_SESSION["tri"] = "nanc";
             break;
@@ -538,7 +547,7 @@ switch ($_SESSION["tri"])
         include_once './vue/accueil.php';
         exit();
         break;
-    // ac -> alphabétique non croissant
+    // anc -> alphabétique non croissant
     case "anc":
         $filmsAccueil = GetFilm($page,$limite,"nomFilm","desc");
         $triA = "c";
