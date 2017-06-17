@@ -544,41 +544,33 @@ switch ($_SESSION["tri"])
         $filmsAccueil = GetFilm($page,$limite,"nomFilm","asc");
         $triA = "nc";
         $triNA = "nc";
-        include_once './vue/accueil.php';
-        exit();
         break;
     // anc -> alphabétique non croissant
     case "anc":
         $filmsAccueil = GetFilm($page,$limite,"nomFilm","desc");
         $triA = "c";
         $triNA = "nc";
-        include_once './vue/accueil.php';
-        exit();
         break;
     // nac -> nombre d'apparition croissant
     case "nac":
         $filmsAccueil = GetFilm($page,$limite,"nbFilms","asc");
         $triA = "nc";
         $triNA = "nc";
-        include_once './vue/accueil.php';
-        exit();
         break;
     // nanc -> nombre d'apparition non croissant
     case "nanc":
         $filmsAccueil = GetFilm($page,$limite,"nbFilms","desc");
         $triA = "nc";
         $triNA = "c";
-        include_once './vue/accueil.php';
-        exit();
         break;
     default:
         $filmsAccueil = GetFilm($page,$limite,"nomFilm","asc");
         $triA = "nc";
         $triNA = "nc";
-        include_once './vue/accueil.php';
-        exit();
         break;
 }
 
+include_once './vue/accueil.php';
+exit();
 
 ?>
