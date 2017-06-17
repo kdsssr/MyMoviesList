@@ -58,7 +58,7 @@ function VerifierLogin($login,$mdp)
 /**
  * On récupère les commentaires liés à un film
  * @param string $idFilm L'id du film dont on souhaite avoir les commentaires
- * @return {tableau associatif} retourne un tableau de tableau de commentaires
+ * @return {tableau associatif} retourne des tableaux de commentaires avec pour chaque commentaires un tableau avec leurs informations
  */
 function GetCommentaire($idFilm)
 {
@@ -154,7 +154,7 @@ function VerifierFilmExiste($id)
  * Récupère une des deux listes d'un utilisateur
  * @param int $idUtilisateur L'id de l'utiisateur à qui appartient la liste
  * @param string $type Le type de la liste (vu ou à voir)
- * @return {tableau associatif} retourne un tableau de tableau avec les films qui font partie de cette liste
+ * @return {tableau associatif} retourne des tableaux avec les films qui font partie de cette liste et un tableau par film qui ont les informations sur le film
  */
 function GetFilmListe($idUtilisateur,$type)
 {
@@ -232,7 +232,7 @@ function UpdateListe($idUtilisateur,$idFilm,$type)
 
 /**
  * Récupère le nom d'un utilisateur avec son id
- * @param int $idUtilisateur L'id de l'utilisateur que l'on cherche à obentenir le pseudo
+ * @param int $idUtilisateur L'id de l'utilisateur que l'on cherche à obtenir le pseudo
  * @return {tableau associatif} retourne un tableau de tableau avec le nom de l'utilisateur
  */
 function GetNomUtilisateur($idUtilisateur)
@@ -241,7 +241,7 @@ function GetNomUtilisateur($idUtilisateur)
     
     $requete = $connexion->prepare("select pseudo FROM utilisateurs WHERE idUtilisateur = :id");
     
-    $requete->bindParam(":id", $idUtilisateur, PDO::PARAM_STR);
+    $requete->bindParam(":id", $idUtilisateur, PDO::PARAM_INT);
     
     $requete->execute();
     
@@ -256,7 +256,7 @@ function GetNomUtilisateur($idUtilisateur)
  * @param int $limite La limite de film par page
  * @param string $tri Le tri qui est effectif (nomFilm ou nbFilms)
  * @param string $ordre L'ordre du tri (asc ou desc))
- * @return {tableau associatif} retourne un tableau de tableau avec un nombre limité de films triés et par page
+ * @return {tableau associatif} retourne des tableaux avec les films qui font partie d'au moins une liste et un tableau par film qui ont les informations sur le film
  */
 function GetFilm($page,$limite,$tri,$ordre)
 {
@@ -292,7 +292,7 @@ function CompterFilms()
 /**
  * Compte le nombre de fois qu'un film apparait dans chacune des listes
  * @param string $id L'id du film
- * @return {tableau associatif} retourne un tableau de tableau avec le nombrede fois qu'un film apparait dans la liste vu et à voir
+ * @return {tableau associatif} retourne un tableau de tableau avec le nombre de fois qu'un film apparait dans la liste vu et à voir
  */
 function CompterFilmDansListe($id)
 {
@@ -312,7 +312,7 @@ function CompterFilmDansListe($id)
 
 /**
  * Vérifie si un pseudo est déjà prit
- * @param string $nom
+ * @param string $nom Le pseudo à vérifier
  * @return {tableau associatif} retourne un tableau de tableau avec le pseudo s'il est déjà prit
  */
 function VerifierNomUtilisateur($nom)
@@ -330,6 +330,12 @@ function VerifierNomUtilisateur($nom)
     return $resultat;
 }
 
+/**
+ * Ajoute un utilisateur avec son nom et mot de passe dans la base de données
+ * @param string $nom Le pseudo de l'utilisateur
+ * @param string $mdp Le mot de passe crypté en SHA1 de l'utilisateur.
+ * @return {tableau associatif} retourne un tableau de tableau avec l'id de l'utilisateur qui vient d'être inséré.
+ */
 function AjouterUtilisateur($nom,$mdp)
 {
     $connexion = GetConnexion();
@@ -344,6 +350,11 @@ function AjouterUtilisateur($nom,$mdp)
     return ($connexion->lastInsertId());
 }
 
+/**
+ * Compte le nombre de films qu'un utilisateur a dans chaque liste
+ * @param int $idUtilisateur L'id de l'utilisateur.
+ * @return {tableau associatif} retourne un tableau de tableau avec le nombre de films qu'un utilisateur a dans chaque liste
+ */
 function CompterFilmsParListe($idUtilisateur)
 {
     $connexion = GetConnexion();

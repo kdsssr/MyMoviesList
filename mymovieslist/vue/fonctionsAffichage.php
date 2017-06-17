@@ -7,6 +7,7 @@
 /**
  * Affiche le nav si c'est un utilisateur connecté ou non
  * @param bool $etatUtilisateur Vrai si l'utilisateur est connecté, faux si non
+ * @param string $rechercheEffectue La recherche qui a été effectué par l'utilisateur dans la barre de recherche, par défaut il n'y a rien
  */
 function AfficherNav($etatUtilisateur,$rechercheEffectue  = "")
 {
@@ -74,6 +75,7 @@ function AfficherNav($etatUtilisateur,$rechercheEffectue  = "")
 /**
  * La fonction gère l'affichage des informations du film dans une table
  * @param object $film L'objet comportant les informations du film
+ * @param string $listeDejaActive La liste dans laquelle se trouve le film, s'il se trouve dans une liste
  */
 function AfficherFilm($film,$listeDejaActive)
 {
@@ -139,11 +141,11 @@ function AfficherCommentaires($commentaires)
 }
 
 /**
- * 
- * @param type $liste
- * @param type $proprietaire
- * @param type $type
- * @param type $utilisateur
+ * Afficher soit la liste personnelle soit la liste d'un autre utilisateur
+ * @param {tableau associatif} $liste La liste avec les films
+ * @param bool $proprietaire Vrai si on est le propriétaire de la liste, faux s'il s'agit de la liste d'un autre
+ * @param string $type Le type de la liste (vu ou à voir)
+ * @param int $id L'id de l'utilisateur à qui appartient la liste
  */
 function AfficherListe($liste, $proprietaire, $type,$id)
 {
@@ -180,6 +182,12 @@ function AfficherListePerso($laListe,$type)
     echo '</form></table>';
 }
 
+/**
+* Affiche la liste d'un autre utilisateur
+ * @param {tableau associatif} $laListe Tableau contenant les films faisant partie de cette liste
+ * @param string $type Le type de la liste (vu ou à voir)
+ * @param string $nomUtilisateur Nom de l'utilisateur
+ */
 function AfficherListeAutre($laListe,$type,$nomUtilisateur)
 {
     echo '<h1 class="mb-5 display-4">Voici la liste de film ' . $type . ' de <a href="index.php?profil=' . $nomUtilisateur .'">' . $nomUtilisateur .'</a></h1>';
@@ -244,7 +252,7 @@ function AfficherBtnPages($limite,$pActuelle)
 }
 
 /**
- * Affiche les erreurs ou la confiramtion d'une action de l'utilisateur.
+ * Affiche les erreurs ou la confirmation d'une action de l'utilisateur.
  * @param string $notif Le texte à afficher
  */
 function AfficherNotif($notif)
@@ -258,6 +266,11 @@ function AfficherNotif($notif)
     }
 }
 
+/**
+ * Afficher soit le profil personnel soit le profil d'un autre utilisateur
+ * @param int $id Id de l'utilisateur
+ * @param int $proprietaire Nombre qui indique quelle page on doit afficher 0 sa page personnelle, 1 le profil d'un autre et le reste on affiche pas de résutltat
+ */
 function AfficherProfil($id, $proprietaire)
 {
     $nbListes = CompterFilmsParListe($id);
@@ -277,6 +290,11 @@ function AfficherProfil($id, $proprietaire)
     }
 }
 
+/**
+ * Affiche notre profil
+ * @param int $nbVu Le nombre de film qu'on a vu
+ * @param int $nbAvoir Le nombre de film qu'on veut voir
+ */
 function AfficherSonProfil($nbVu,$nbAvoir)
 {
     echo '<h1 class="mb-4 display-3" >Votre profil</h1>'
@@ -287,6 +305,12 @@ function AfficherSonProfil($nbVu,$nbAvoir)
             . '<td><button class="btn btn-info btn-sm" type="submit" name="type" value="aVoir">Films à voir</button></td></tr></table>';
 }
 
+/**
+ * Affiche le profil d'un utilisateur
+ * @param int $nbVuLe Le nombre de film que l'utilisateur a vu
+ * @param int $nbAvoir Le nombre de film que l'utilisateur veut voir
+ * @param string $nom Le pseudo de l'utilisateur
+ */
 function AfficherProfilRecherche($nbVu,$nbAvoir,$nom)
 {
     echo '<h1 class="mb-4 display-3" >Profil de ' . $nom . '</h1>'
@@ -298,6 +322,9 @@ function AfficherProfilRecherche($nbVu,$nbAvoir,$nom)
     
 }
 
+/**
+ * Affiche aucun résultat pour les recherches
+ */
 function AfficherAucunRsultat()
 {
     echo '<h1 class="display-4">Aucun résultat.</h1>';

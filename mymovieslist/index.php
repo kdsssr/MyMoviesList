@@ -116,6 +116,7 @@ if (isset($_REQUEST["logger"]) && isset($_REQUEST["mdp"]))
     }
 }
 
+// Vérifie si l'utilisateur a cliqué sur le profil d'un utilisateur ou qu'on veuille aller sur son profil
 if (isset($_GET["profil"]))
 {
     if ($_SESSION["log"] && $_GET["profil"] == "p")
@@ -344,6 +345,7 @@ if (isset($_GET["type"])  && $_SESSION["log"])
     }
 }
 
+// Vérifie si l'utilisateur veut voir ses listes ou une liste d'un autre utilisateur
 if (isset($_POST["type"]))
 {
     $listeFilms = GetFilmListe($_SESSION["utilisateurListe"], $_POST["type"]);
@@ -528,6 +530,7 @@ if (isset($_GET["tri"]))
 // Sélectionne le bon tri et récupère les films avec les bons tris en fonction de la variable tri dans la session
 switch ($_SESSION["tri"])
 {
+    // ac -> alphabétique croissant
     case "ac":
         $filmsAccueil = GetFilm($page,$limite,"nomFilm","asc");
         $triA = "nc";
@@ -535,6 +538,7 @@ switch ($_SESSION["tri"])
         include_once './vue/accueil.php';
         exit();
         break;
+    // ac -> alphabétique non croissant
     case "anc":
         $filmsAccueil = GetFilm($page,$limite,"nomFilm","desc");
         $triA = "c";
@@ -542,6 +546,7 @@ switch ($_SESSION["tri"])
         include_once './vue/accueil.php';
         exit();
         break;
+    // nac -> nombre d'apparition croissant
     case "nac":
         $filmsAccueil = GetFilm($page,$limite,"nbFilms","asc");
         $triA = "nc";
@@ -549,6 +554,7 @@ switch ($_SESSION["tri"])
         include_once './vue/accueil.php';
         exit();
         break;
+    // nanc -> nombre d'apparition non croissant
     case "nanc":
         $filmsAccueil = GetFilm($page,$limite,"nbFilms","desc");
         $triA = "nc";
